@@ -29,7 +29,40 @@
 
 </style>
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" 
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" 
+        crossorigin="anonymous"></script>
+
 <script>
+
+	
+	function searchAppStore()
+	{
+		// base url of iTunes server
+		var iTunesUrl = "https://itunes.apple.com/search";
+
+		// retrieve data from search field
+		var searchText = $("#search-field").val();
+
+		var queryData = {term : searchText, country : "US", limit : "15"};
+
+		// retrieve search results from iTunes server
+		$.getJSON(iTunesUrl, queryData, function(data) {
+
+			console.log(data); // print out data to browser (DUMMY CODE)
+
+		});
+
+	}
+
+
+	$( document ).ready(function() {
+
+		$("#search-button").on("click", searchAppStore);
+
+	});
+
+
 </script>
 
 </head>
@@ -39,8 +72,8 @@
 
 <!-- search field -->
 
-<input type="text" placeholder="Search...">
-<button>Search</button>
+<input id="search-field" type="text" placeholder="Search...">
+<button id="search-button">Search</button>
 
 <!-- List item 1 -->
 <!-- List item 2 -->
@@ -55,6 +88,9 @@
 <!-- App icon --> <!-- App name --> <!-- App price -->
 
 <ul>
+	<li>
+		<span> <div class="app-img"> IMAGE HERE </div> <div class="app-title"> TITLE HERE </div> <div class="app-price"> PRICE HERE </div> </span>
+	</li>
 	<li>
 		<span> <div class="app-img"> IMAGE HERE </div> <div class="app-title"> TITLE HERE </div> <div class="app-price"> PRICE HERE </div> </span>
 	</li>
