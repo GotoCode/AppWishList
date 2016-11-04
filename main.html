@@ -12,6 +12,11 @@
 		display: inline-block;
 	}
 
+	li
+	{
+		list-style: none;
+	}
+
 	.app-img
 	{
 		background-color: red;
@@ -25,6 +30,17 @@
 	.app-price
 	{
 		background-color: blue;
+	}
+
+	.search-result-item
+	{
+		width: 500px;
+
+		border: black solid 2px;
+
+		padding: 2px;
+
+		margin: 5px;
 	}
 
 </style>
@@ -69,6 +85,7 @@
 		{
 			var listNode = document.createElement("li");
 
+			listNode.setAttribute("class", "search-result-item");
 			listNode.innerHTML = results[i].trackName + " - " + results[i].artistName;
 
 			$("#search-results").append(listNode);
