@@ -38,6 +38,9 @@
 	
 	function searchAppStore()
 	{
+		// reset the list of search results
+		$("li").replaceWith("");
+
 		// base url of iTunes server
 		var iTunesUrl = "https://itunes.apple.com/search";
 
@@ -49,10 +52,27 @@
 		// retrieve search results from iTunes server
 		$.getJSON(iTunesUrl, queryData, function(data) {
 
-			console.log(data); // print out data to browser (DUMMY CODE)
+			console.log(data); // dummy code
+
+			var results = data.results;
+
+			displayResults(results);
 
 		});
+	}
 
+
+	function displayResults(results)
+	{
+		// display search results on the page
+		for (var i = 0; i < results.length; i++)
+		{
+			var listNode = document.createElement("li");
+
+			listNode.innerHTML = results[i].trackName + " - " + results[i].artistName;
+
+			$("#search-results").append(listNode);
+		}
 	}
 
 
@@ -87,15 +107,7 @@
 
 <!-- App icon --> <!-- App name --> <!-- App price -->
 
-<ul>
-	<li>
-		<span> <div class="app-img"> IMAGE HERE </div> <div class="app-title"> TITLE HERE </div> <div class="app-price"> PRICE HERE </div> </span>
-	</li>
-	<li>
-		<span> <div class="app-img"> IMAGE HERE </div> <div class="app-title"> TITLE HERE </div> <div class="app-price"> PRICE HERE </div> </span>
-	</li>
-	<!-- ... -->
-</ul>
+<ul id="search-results"></ul>
 
 <!-- Credits line -->
 <p>Made by GotoCode</p>
