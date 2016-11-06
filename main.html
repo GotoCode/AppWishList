@@ -1,3 +1,14 @@
+
+<!--
+
+	GOALS
+
+	- Implement ability to add items to wishlist (DONE)
+	- Implement localStorage to persist items after closing the app
+	- Add ability to track price changes
+
+-->
+
 <html>
 
 
@@ -15,6 +26,11 @@
 	li
 	{
 		list-style: none;
+	}
+
+	#top
+	{
+		padding: 15px;
 	}
 
 	.app-img
@@ -43,19 +59,101 @@
 		margin: 5px;
 	}
 
+	#search-results
+	{
+		margin-top: 10px;
+	}
+
+	#mode-select
+	{
+		margin-bottom: 10px;
+	}
+
 </style>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js" 
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" 
         crossorigin="anonymous"></script>
 
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 <script>
+
+	// array to store entries in wish list
+
+	var wishList = [];
+
+
+	function addWishListItem(event)
+	{
+		//console.log(event.data); // dummy code
+
+		wishList.push(event.data);
+	}
+
+
+	function displayList(items)
+	{
+		for (var i = 0; i < items.length; i++)
+		{
+			
+			var aNode = document.createElement("a");
+			
+			aNode.setAttribute("href", "#");
+			//aNode.setAttribute("id", "item-" + i);         // uncomment this when we implement item deletion
+			aNode.setAttribute("class", "list-group-item");
+
+			aNode.innerText = items[i].name + " - " + items[i].publisher;
+
+
+			var badgeNode = document.createElement("span");
+
+			badgeNode.setAttribute("class", "badge");
+
+			badgeNode.innerText = items[i].price;
+
+			aNode.appendChild(badgeNode);
+
+
+			$("#list-results").append(aNode);
+		}
+	}
+
+
+	function showWishList()
+	{
+
+		document.getElementById("list-results").innerHTML = "";
+
+		//console.log("Hello!"); // dummy code
+
+		$("#search-view").slideUp();
+		$("#list-view").slideDown();
+
+		$("#search-menu-button").removeClass("active");
+		$("#list-menu-button").addClass("active");
+
+		displayList(wishList);
+	}
+
+
+	function showSearchList()
+	{
+		document.getElementById("list-results").innerHTML = "";
+
+		$("#list-view").slideUp();
+		$("#search-view").slideDown();
+
+		$("#list-menu-button").removeClass("active");
+		$("#search-menu-button").addClass("active");
+	}
 
 	
 	function searchAppStore()
 	{
 		// reset the list of search results
-		$("li").replaceWith("");
+		$("a.list-group-item").replaceWith("");
 
 		// base url of iTunes server
 		var iTunesUrl = "https://itunes.apple.com/search";
@@ -63,7 +161,7 @@
 		// retrieve data from search field
 		var searchText = $("#search-field").val();
 
-		var queryData = {term : searchText, country : "US", limit : "15"};
+		var queryData = {term : searchText, country : "US", limit : "10", entity : "software"};
 
 		// retrieve search results from iTunes server
 		$.getJSON(iTunesUrl, queryData, function(data) {
@@ -83,12 +181,30 @@
 		// display search results on the page
 		for (var i = 0; i < results.length; i++)
 		{
-			var listNode = document.createElement("li");
+			//var listNode = document.createElement("li");
 
-			listNode.setAttribute("class", "search-result-item");
-			listNode.innerHTML = results[i].trackName + " - " + results[i].artistName;
+			var aNode = document.createElement("a");
+			
+			aNode.setAttribute("href", "#");
+			aNode.setAttribute("id", "item-" + i);
+			aNode.setAttribute("class", "list-group-item");
 
-			$("#search-results").append(listNode);
+			aNode.innerText = results[i].trackName + " - " + results[i].artistName;
+
+			var badgeNode = document.createElement("span");
+
+			badgeNode.setAttribute("class", "badge");
+
+			badgeNode.innerText = results[i].formattedPrice;
+
+			aNode.appendChild(badgeNode);
+
+			//listNode.setAttribute("class", "search-result-item");
+			//listNode.innerHTML = "<a href='#' class='list-group-item'>" + results[i].trackName + " - " + results[i].artistName + "</a>";
+
+			$("#search-results").append(aNode);
+
+			$("a#item-" + i).on("click", { name : results[i].trackName, publisher : results[i].artistName, price : results[i].formattedPrice }, addWishListItem);
 		}
 	}
 
@@ -97,37 +213,64 @@
 
 		$("#search-button").on("click", searchAppStore);
 
+		$("#list-menu-button").on("click", showWishList);
+
+		$("#search-menu-button").on("click", showSearchList);
+
 	});
 
 
 </script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 </head>
 
 
 <body>
 
-<!-- search field -->
+<div id="top">
 
-<input id="search-field" type="text" placeholder="Search...">
-<button id="search-button">Search</button>
+	<ul id="mode-select" class="nav nav-tabs">
+		<li role="presentation" id="list-menu-button"><a href="#">List</a></li>
+		<li role="presentation" id="search-menu-button" class="active"><a href="#">Search</a></li>
+	</ul>
 
-<!-- List item 1 -->
-<!-- List item 2 -->
-<!-- List item 3 -->
-<!-- ... ... ... -->
-<!-- List item N -->
+	<div id="search-view">
+		<!-- search field -->
 
-<!-- Prototype for sequence of list items -->
+		<input id="search-field" type="text" placeholder="Search...">
+		<button id="search-button">Search</button>
 
-<!-- Each list item contains 3 pieces of info... -->
+		<br/>
 
-<!-- App icon --> <!-- App name --> <!-- App price -->
+		<!-- List item 1 -->
+		<!-- List item 2 -->
+		<!-- List item 3 -->
+		<!-- ... ... ... -->
+		<!-- List item N -->
 
-<ul id="search-results"></ul>
+		<!-- Prototype for sequence of list items -->
 
-<!-- Credits line -->
-<p>Made by GotoCode</p>
+		<!-- Each list item contains 3 pieces of info... -->
+
+		<!-- App icon --> <!-- App name --> <!-- App price -->
+
+		<div id="search-results" class="list-group"></div>
+	</div>
+
+	<div id="list-view" style="display : none;">
+		<div id="list-results"></div>
+	</div>
+
+	<!-- Credits line -->
+	<p style="margin-top: 10px;">Made by GotoCode</p>
+
+</div>
 
 </body>
 
