@@ -3,9 +3,12 @@
 
 	GOALS
 
-	- Implement ability to add items to wishlist (DONE)
-	- Implement localStorage to persist items after closing the app
+	- Add ability to delete items from wishList
 	- Add ability to track price changes
+	- Add "loading" symbol while results are loading from remote server
+	- Rename "main.html" to "index.html"
+	- Add app icon to each list item (to the right of app name)
+	- Add UI to signify "add item" and "delete item"
 
 -->
 
@@ -84,12 +87,39 @@
 
 	var wishList = [];
 
+	// pre-populate the wish list, if we added items during the last session
+
+	if (hasLocalStorage())
+	{
+		populateList();
+	}
+
+
+	function populateList()
+	{
+		var storage = window.localStorage;
+
+		for (var i = 0; i < storage.length; i++)
+		{
+			wishList.push(JSON.parse(storage["item-" + i]));
+		}
+	}
+
 
 	function addWishListItem(event)
 	{
 		//console.log(event.data); // dummy code
 
+		if (hasLocalStorage())
+		{
+			var storage = window.localStorage;
+
+			storage["item-" + wishList.length] = JSON.stringify(event.data);
+		}
+
 		wishList.push(event.data);
+
+		console.log(window.localStorage); // dummy code
 	}
 
 
@@ -194,6 +224,7 @@
 			var badgeNode = document.createElement("span");
 
 			badgeNode.setAttribute("class", "badge");
+			//badgeNode.setAttribute("style", "margin: 5px;");
 
 			badgeNode.innerText = results[i].formattedPrice;
 
@@ -205,6 +236,27 @@
 			$("#search-results").append(aNode);
 
 			$("a#item-" + i).on("click", { name : results[i].trackName, publisher : results[i].artistName, price : results[i].formattedPrice }, addWishListItem);
+		}
+	}
+
+
+	function hasLocalStorage()
+	{
+		try
+		{
+			var storage = window.localStorage;
+
+			storage["test"] = "this is a test";
+			var x = storage["test"];
+			storage.removeItem("test");
+
+			return true;
+		}
+		catch (e)
+		{
+			console.log("Local storage not available...");
+
+			return false;
 		}
 	}
 
@@ -244,7 +296,7 @@
 		<!-- search field -->
 
 		<input id="search-field" type="text" placeholder="Search...">
-		<button id="search-button">Search</button>
+		<button type="submit" id="search-button">Search</button>
 
 		<br/>
 
