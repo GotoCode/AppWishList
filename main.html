@@ -3,12 +3,16 @@
 
 	GOALS
 
-	- Add ability to delete items from wishList
+	- Place app logic into a separate "app.js" file
 	- Add ability to track price changes
 	- Add "loading" symbol while results are loading from remote server
 	- Rename "main.html" to "index.html"
 	- Add app icon to each list item (to the right of app name)
 	- Add UI to signify "add item" and "delete item"
+	- Go to app description page when user clicks on an item
+	- Trigger search when hitting ENTER on the keyboard
+	- Provide UI to clearly indicate that a new item has been added to wish list
+	- Find a way to remove the "reformat entire localStorage" step entirely
 
 -->
 
@@ -87,13 +91,6 @@
 
 	var wishList = [];
 
-	// pre-populate the wish list, if we added items during the last session
-
-	if (hasLocalStorage())
-	{
-		populateList();
-	}
-
 
 	function populateList()
 	{
@@ -123,6 +120,42 @@
 	}
 
 
+	function deleteWishListItem(event)
+	{
+		// determine which list item needs to be removed
+		var index = parseInt(/item-(\d+)/.exec(event.currentTarget.getAttribute("id"))[1]);
+
+		//console.log(index); // dummy code
+
+		wishList.splice(index, 1);
+
+		if (hasLocalStorage())
+		{
+			var storage = window.localStorage;
+
+			storage.removeItem("item-" + index);
+
+			// adjust indices for all other items in localStorage...
+
+			if (wishList.length > 0)
+			{
+				for (var i = index + 1; ; i++)
+				{
+					var storageItem = storage["item-" + i];
+
+					if (!storageItem) break;
+
+					storage.removeItem("item-" + i);
+					storage["item-" + (i - 1)] = storageItem;
+				}
+			}
+		}
+
+		// remove this list item from the UI
+		event.currentTarget.outerHTML = ""
+	}
+
+
 	function displayList(items)
 	{
 		for (var i = 0; i < items.length; i++)
@@ -131,7 +164,7 @@
 			var aNode = document.createElement("a");
 			
 			aNode.setAttribute("href", "#");
-			//aNode.setAttribute("id", "item-" + i);         // uncomment this when we implement item deletion
+			aNode.setAttribute("id", "item-" + i);
 			aNode.setAttribute("class", "list-group-item");
 
 			aNode.innerText = items[i].name + " - " + items[i].publisher;
@@ -145,6 +178,7 @@
 
 			aNode.appendChild(badgeNode);
 
+			aNode.addEventListener("click", deleteWishListItem);
 
 			$("#list-results").append(aNode);
 		}
@@ -155,8 +189,6 @@
 	{
 
 		document.getElementById("list-results").innerHTML = "";
-
-		//console.log("Hello!"); // dummy code
 
 		$("#search-view").slideUp();
 		$("#list-view").slideDown();
@@ -196,7 +228,7 @@
 		// retrieve search results from iTunes server
 		$.getJSON(iTunesUrl, queryData, function(data) {
 
-			console.log(data); // dummy code
+			//console.log(data); // dummy code
 
 			var results = data.results;
 
@@ -268,6 +300,14 @@
 		$("#list-menu-button").on("click", showWishList);
 
 		$("#search-menu-button").on("click", showSearchList);
+
+		// pre-populate the wish list with any items we added during the last session
+
+		if (hasLocalStorage())
+		{
+			console.log(window.localStorage); // dummy code
+			populateList();
+		}
 
 	});
 
