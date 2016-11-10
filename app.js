@@ -29,7 +29,7 @@ function addWishListItem(event)
 
 	wishList.push(event.data);
 
-	console.log(window.localStorage); // dummy code
+	//console.log(window.localStorage); // dummy code
 }
 
 
@@ -40,7 +40,8 @@ function deleteWishListItem(event)
 
 	//console.log(index); // dummy code
 
-	wishList.splice(index, 1);
+	console.log(event.currentTarget.getAttribute("id")) // dummy code
+	console.log(wishList.splice(index, 1)); // dummy code
 
 	if (hasLocalStorage())
 	{
@@ -61,11 +62,27 @@ function deleteWishListItem(event)
 				storage.removeItem("item-" + i);
 				storage["item-" + (i - 1)] = storageItem;
 			}
+
+			/*for (var i = index + 1; ; i++)
+			{
+				//document.getElementById("item-" + i).setAttribute("id", "item-" + (i - 1));
+				console.log(document.getElementById("item-" + i)) // dummy code
+			}*/
 		}
+		
+		document.getElementById("list-results").innerHTML = "";
+
+		displayList(wishList);
+
+		//console.log(wishList); // dummy code
 	}
 
+	//event.currentTarget.parentNode.innerHTML = ""; // dummy code
+
 	// remove this list item from the UI
-	event.currentTarget.outerHTML = ""
+	//event.currentTarget.outerHTML = ""
+
+	//document.getElementById("item" + index).outerHTML = "";
 }
 
 
@@ -141,7 +158,7 @@ function searchAppStore()
 	// retrieve search results from iTunes server
 	$.getJSON(iTunesUrl, queryData, function(data) {
 
-		//console.log(data); // dummy code
+		console.log(data); // dummy code
 
 		var results = data.results;
 
