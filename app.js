@@ -2,7 +2,91 @@
 
 // array to store entries in wish list
 
+//var numCalls = 0;
+
 var wishList = [];
+
+
+function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy code
+{
+	//numCalls++;
+
+	//var oldPrice = oldPrice == "Free" ? 0 : parseInt(/.(\d+\.\d+)/.exec(oldPrice)[1]);
+
+	//console.log(numCalls);
+	//console.log(targetNode);
+
+	var prevPrice = oldPrice;
+
+	var formattedPrice = data.results[0].formattedPrice;
+	var nextPrice = prevPrice;
+
+	// replace the ternary operator with if-else statements
+
+	if (oldPrice === "Free")
+	{
+		prevPrice = 0;
+	}
+	else
+	{
+		prevPrice = Number(/.(\d+\.\d+)/.exec(oldPrice)[1]);
+	}
+
+	// DO NOT use the ternary operator
+
+	if (formattedPrice == "Free")
+	{
+		nextPrice = 0;
+	}
+	else
+	{
+		nextPrice = Number(/.(\d+\.\d+)/.exec(formattedPrice)[1]);
+	}
+
+	var redItemColor   = "list-group-item-danger";
+	var greenItemColor = "list-group-item-success";
+
+	if (nextPrice < prevPrice)
+	{
+		// color the list item for this app GREEN
+
+		if (targetNode.classList.contains(redItemColor))
+			targetNode.classList.remove(redItemColor);
+
+		if (!targetNode.classList.contains(greenItemColor))
+			targetNode.classList.add(greenItemColor);
+	}
+	else if (nextPrice > prevPrice)
+	{
+		// color the list item for this app RED
+
+		if (targetNode.classList.contains(greenItemColor))
+			targetNode.classList.remove(greenItemColor);
+
+		if (!targetNode.classList.contains(redItemColor))
+			targetNode.classList.add(redItemColor);
+	}
+	else
+	{
+		// set color to NEUTRAL for this list-item
+		
+		if (targetNode.classList.contains(redItemColor))
+			targetNode.classList.remove(redItemColor);
+
+		if (targetNode.classList.contains(greenItemColor))
+			targetNode.classList.remove(greenItemColor);
+
+		//targetNode.classList.add(greenItemColor); // dummy code
+	}
+
+	// update the price for the given app
+
+	items[index].oldPrice = items[index].newPrice;
+	items[index].newPrice = formattedPrice;
+
+	//console.log("new oldPrice:", items[index].oldPrice);
+	//console.log("new newPrice:", items[index].newPrice);
+}
 
 
 function populateList()
@@ -88,9 +172,16 @@ function deleteWishListItem(event)
 
 function displayList(items)
 {
+	var wishList = items;
+	var j = 0;
+
+	var oldPrice     = 0;
+	var updatedPrice = 0;
+
 	for (var i = 0; i < items.length; i++)
 	{
-		
+		j = i;
+
 		var aNode = document.createElement("a");
 		
 		aNode.setAttribute("href", "#");
@@ -104,13 +195,26 @@ function displayList(items)
 
 		badgeNode.setAttribute("class", "badge");
 
-		badgeNode.innerText = items[i].price;
+		//console.log(items[i].newPrice); // dummy code
+
+		newPrice = items[i].newPrice; // dummy code
+
+		badgeNode.innerText = items[i].newPrice; // uncomment this when ready...
 
 		aNode.appendChild(badgeNode);
 
 		aNode.addEventListener("click", deleteWishListItem);
 
+		var iTunesUrl = "https://itunes.apple.com/search";
+		var queryData = {term : items[i].name, country : "US", limit : "10", entity : "software"};
+
+		//console.log(wishList[j].name, wishList[j].newPrice); // dummy code
+
+		// retrieve search results from iTunes server
+		$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));
+
 		$("#list-results").append(aNode);
+		
 	}
 }
 
@@ -197,7 +301,10 @@ function displayResults(results)
 
 		$("#search-results").append(aNode);
 
-		$("a#item-" + i).on("click", { name : results[i].trackName, publisher : results[i].artistName, price : results[i].formattedPrice }, addWishListItem);
+		$("a#item-" + i).on("click", { name : results[i].trackName, 
+									   publisher : results[i].artistName, 
+									   oldPrice : results[i].formattedPrice, 
+									   newPrice : results[i].formattedPrice }, addWishListItem);
 	}
 }
 
