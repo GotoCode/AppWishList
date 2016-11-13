@@ -2,8 +2,7 @@
 
 	GOALS
 	
-	- Add "loading" symbol while results are loading from remote server
-	- Add app icon to each list item (to the right of app name)
+	- Add app icon to each list item (to the left of app name)
 	- Add UI to signify "add item" and "delete item"
 	- Go to app description page when user clicks on an item
 	- Trigger search when hitting ENTER on the keyboard
@@ -12,6 +11,7 @@
 	- Separate styling into a separate CSS file
 	- Prevent user from adding an app when it's already on the wishlist
 	- Indicate to user that an app cannot be added (because it's already on the wishlist)
+	- Add some internal padding/margin to each list item
 	
 -->
 
@@ -65,6 +65,11 @@
 		margin: 5px;
 	}
 
+	.symbol-hide
+	{
+		display: none;
+	}
+
 	#search-results
 	{
 		margin-top: 10px;
@@ -111,6 +116,8 @@
 		<button type="submit" id="search-button">Search</button>
 
 		<br/>
+
+		<img id="loading-symbol" src="loading-symbol.gif" width="50px">
 
 		<!-- List item 1 -->
 		<!-- List item 2 -->

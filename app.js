@@ -251,6 +251,9 @@ function searchAppStore()
 	// reset the list of search results
 	$("a.list-group-item").replaceWith("");
 
+	// show the loading symbol
+	$("#loading-symbol").removeClass("symbol-hide");
+
 	// base url of iTunes server
 	var iTunesUrl = "https://itunes.apple.com/search";
 
@@ -274,6 +277,9 @@ function searchAppStore()
 
 function displayResults(results)
 {
+	// hide the loading symbol
+	$("#loading-symbol").addClass("symbol-hide");
+
 	// display search results on the page
 	for (var i = 0; i < results.length; i++)
 	{
@@ -337,6 +343,10 @@ $( document ).ready(function() {
 	$("#list-menu-button").on("click", showWishList);
 
 	$("#search-menu-button").on("click", showSearchList);
+
+	// hide the loading symbol on booting up
+
+	$("#loading-symbol").addClass("symbol-hide");
 
 	// pre-populate the wish list with any items we added during the last session
 
