@@ -111,7 +111,11 @@ function addWishListItem(event)
 		storage["item-" + wishList.length] = JSON.stringify(event.data);
 	}
 
+	//console.log(event.data); // dummy code
+
 	wishList.push(event.data);
+
+	event.preventDefault(); // dummy code
 
 	//console.log(window.localStorage); // dummy code
 }
@@ -158,6 +162,8 @@ function deleteWishListItem(event)
 
 		displayList(wishList);
 
+		event.preventDefault();
+
 		//console.log(wishList); // dummy code
 	}
 
@@ -182,11 +188,20 @@ function displayList(items)
 	{
 		j = i;
 
+		var imgNode = document.createElement("img");
+
+		imgNode.setAttribute("src", items[i].icon);
+		imgNode.setAttribute("class", "app-icon");
+
+		//console.log(items[i].icon); // dummy code
+
 		var aNode = document.createElement("a");
 		
 		aNode.setAttribute("href", "#");
 		aNode.setAttribute("id", "item-" + i);
 		aNode.setAttribute("class", "list-group-item");
+
+		//aNode.setAttribute("role", "button"); // dummy code
 
 		aNode.innerText = items[i].name + " - " + items[i].publisher;
 
@@ -215,6 +230,7 @@ function displayList(items)
 
 		$("#list-results").append(aNode);
 		
+		$("#list-results #item-" + i).prepend(imgNode);
 	}
 }
 
@@ -285,11 +301,18 @@ function displayResults(results)
 	{
 		//var listNode = document.createElement("li");
 
+		var imgNode = document.createElement("img");
+
+		imgNode.setAttribute("src", results[i].artworkUrl60);
+		imgNode.setAttribute("class", "app-icon");
+
 		var aNode = document.createElement("a");
 		
 		aNode.setAttribute("href", "#");
 		aNode.setAttribute("id", "item-" + i);
 		aNode.setAttribute("class", "list-group-item");
+
+		//aNode.setAttribute("role", "button"); // dummy code
 
 		aNode.innerText = results[i].trackName + " - " + results[i].artistName;
 
@@ -307,7 +330,12 @@ function displayResults(results)
 
 		$("#search-results").append(aNode);
 
+		$("#search-results #item-" + i).prepend(imgNode);
+
+		//console.log(results[i].artworkUrl60); // dummy code
+
 		$("a#item-" + i).on("click", { name : results[i].trackName, 
+									   icon : results[i].artworkUrl60,
 									   publisher : results[i].artistName, 
 									   oldPrice : results[i].formattedPrice, 
 									   newPrice : results[i].formattedPrice }, addWishListItem);
