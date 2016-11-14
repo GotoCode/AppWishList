@@ -123,8 +123,9 @@ function addWishListItem(event)
 
 function deleteWishListItem(event)
 {
+
 	// determine which list item needs to be removed
-	var index = parseInt(/item-(\d+)/.exec(event.currentTarget.getAttribute("id"))[1]);
+	var index = Number(/remove-btn-(\d+)/.exec(event.currentTarget.getAttribute("class"))[1]);
 
 	//console.log(index); // dummy code
 
@@ -218,7 +219,13 @@ function displayList(items)
 
 		aNode.appendChild(badgeNode);
 
-		aNode.addEventListener("click", deleteWishListItem);
+		//aNode.addEventListener("click", deleteWishListItem);
+
+		var removeDiv = document.createElement("div");
+
+		//aNode.setAttribute("id", "item-" + i);
+		removeDiv.classList.add("remove-btn-" + i);
+		removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
 
 		var iTunesUrl = "https://itunes.apple.com/search";
 		var queryData = {term : items[i].name, country : "US", limit : "10", entity : "software"};
@@ -231,6 +238,10 @@ function displayList(items)
 		$("#list-results").append(aNode);
 		
 		$("#list-results #item-" + i).prepend(imgNode);
+
+		$("#list-results #item-" + i).prepend(removeDiv);
+
+		removeDiv.addEventListener("click", deleteWishListItem);
 	}
 }
 
@@ -325,6 +336,13 @@ function displayResults(results)
 
 		aNode.appendChild(badgeNode);
 
+		var addDiv = document.createElement("div");
+
+		addDiv.classList.add("add-btn-" + i);
+		addDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-plus-circle' aria-hidden='false'></i>";
+
+		//aNode.appendChild(addDiv);
+
 		//listNode.setAttribute("class", "search-result-item");
 		//listNode.innerHTML = "<a href='#' class='list-group-item'>" + results[i].trackName + " - " + results[i].artistName + "</a>";
 
@@ -332,13 +350,23 @@ function displayResults(results)
 
 		$("#search-results #item-" + i).prepend(imgNode);
 
+		$("#search-results #item-" + i).prepend(addDiv);
+
 		//console.log(results[i].artworkUrl60); // dummy code
 
-		$("a#item-" + i).on("click", { name : results[i].trackName, 
+		/*$("a#item-" + i).on("click", { name : results[i].trackName, 
 									   icon : results[i].artworkUrl60,
 									   publisher : results[i].artistName, 
 									   oldPrice : results[i].formattedPrice, 
-									   newPrice : results[i].formattedPrice }, addWishListItem);
+									   newPrice : results[i].formattedPrice }, addWishListItem);*/
+	
+		// dummy code
+
+		$("#search-results #item-" + i + " .add-btn-" + i).on("click", { name : results[i].trackName, 
+									   									 icon : results[i].artworkUrl60,
+									   									 publisher : results[i].artistName, 
+									   									 oldPrice : results[i].formattedPrice, 
+									   									 newPrice : results[i].formattedPrice }, addWishListItem);
 	}
 }
 
