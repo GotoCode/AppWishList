@@ -202,6 +202,9 @@ function displayList(items)
 		aNode.setAttribute("id", "item-" + i);
 		aNode.setAttribute("class", "list-group-item");
 
+		aNode.setAttribute("href", items[i].infoUrl);
+		aNode.setAttribute("target", "_blank");
+
 		//aNode.setAttribute("role", "button"); // dummy code
 
 		aNode.innerText = items[i].name + " - " + items[i].publisher;
@@ -323,6 +326,9 @@ function displayResults(results)
 		aNode.setAttribute("id", "item-" + i);
 		aNode.setAttribute("class", "list-group-item");
 
+		aNode.setAttribute("href", results[i].trackViewUrl);
+		aNode.setAttribute("target", "_blank");
+
 		//aNode.setAttribute("role", "button"); // dummy code
 
 		aNode.innerText = results[i].trackName + " - " + results[i].artistName;
@@ -364,6 +370,7 @@ function displayResults(results)
 
 		$("#search-results #item-" + i + " .add-btn-" + i).on("click", { name : results[i].trackName, 
 									   									 icon : results[i].artworkUrl60,
+									   									 infoUrl : results[i].trackViewUrl,
 									   									 publisher : results[i].artistName, 
 									   									 oldPrice : results[i].formattedPrice, 
 									   									 newPrice : results[i].formattedPrice }, addWishListItem);
