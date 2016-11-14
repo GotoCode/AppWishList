@@ -2,7 +2,6 @@
 	
 	GOALS
 	
-	- Trigger search when hitting ENTER on the keyboard
 	- Provide UI to clearly indicate that a new item has been added to wish list (notification-style?)
 	- Find a way to remove the "reformat entire localStorage" step entirely
 	- Separate styling into a separate CSS file
@@ -14,6 +13,7 @@
 	- Adjust margin-left on price badges
 	- Align all list-item content onto a single reference line
 	- Add "paginated search results" feature
+	- Add suggestions for new apps based on those currently on wish list (optional)
 	
 -->
 
@@ -128,8 +128,10 @@
 	<div id="search-view">
 		<!-- search field -->
 
-		<input id="search-field" type="text" placeholder="Search...">
-		<button type="submit" id="search-button">Search</button>
+		<form action="#" onsubmit="searchAppStore(event)">
+			<input id="search-field" type="text" placeholder="Search...">
+			<button type="submit" id="search-button">Search</button>
+		</form>
 
 		<br/>
 

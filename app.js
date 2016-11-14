@@ -276,8 +276,10 @@ function showSearchList()
 }
 
 
-function searchAppStore()
+function searchAppStore(e)
 {
+	e.preventDefault(); // there is not form to submit...
+
 	// reset the list of search results
 	$("a.list-group-item").replaceWith("");
 
