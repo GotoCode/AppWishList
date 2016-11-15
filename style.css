@@ -1,0 +1,67 @@
+
+div
+{
+	display: inline-block;
+}
+
+li
+{
+	list-style: none;
+}
+
+.app-img
+{
+	background-color: red;
+}
+
+.app-title
+{
+	background-color: green;
+}
+
+.app-price
+{
+	background-color: blue;
+}
+
+.search-result-item
+{
+	width: 500px;
+
+	border: black solid 2px;
+
+	padding: 2px;
+
+	margin: 5px;
+}
+
+.symbol-hide
+{
+	display: none;
+}
+
+.app-icon
+{
+	border-radius: 10px;
+	margin-right: 25px;
+}
+
+.list-group-item
+{
+	font-size: 16px;
+}
+
+#top
+{
+	padding: 15px;
+}
+
+#search-results
+{
+	margin-top: 10px;
+}
+
+#mode-select
+{
+	margin-bottom: 10px;
+}

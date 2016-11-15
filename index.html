@@ -2,7 +2,6 @@
 	
 	GOALS
 	
-	- Separate styling into a separate CSS file
 	- Prevent user from adding an app when it's already on the wishlist
 	- Indicate to user that an app cannot be added (because it's already on the wishlist)
 	- Add ratings (as stars) under each app's name (optional)
@@ -25,80 +24,9 @@
 
 <title>App Wish List</title>
 
-<style>
 
-	div
-	{
-		display: inline-block;
-	}
-
-	li
-	{
-		list-style: none;
-	}
-
-	.app-img
-	{
-		background-color: red;
-	}
-
-	.app-title
-	{
-		background-color: green;
-	}
-
-	.app-price
-	{
-		background-color: blue;
-	}
-
-	.search-result-item
-	{
-		width: 500px;
-
-		border: black solid 2px;
-
-		padding: 2px;
-
-		margin: 5px;
-	}
-
-	.symbol-hide
-	{
-		display: none;
-	}
-
-	.app-icon
-	{
-		border-radius: 10px;
-		margin-right: 25px;
-	}
-
-	.list-group-item
-	{
-		font-size: 16px;
-	}
-
-	#top
-	{
-		padding: 15px;
-	}
-
-	#search-results
-	{
-		margin-top: 10px;
-	}
-
-	#mode-select
-	{
-		margin-bottom: 10px;
-	}
-
-</style>
-
-<script src="https://code.jquery.com/jquery-3.1.1.min.js" 
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" 
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" 
+crossorigin="anonymous"></script>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -112,6 +40,10 @@
 <!-- minified font awesome embed code -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
+<!-- primary style for the app -->
+<link rel="stylesheet" href="style.css">
+
+<!-- main logic for the app -->
 <script src="app.js"></script>
 
 </head>
