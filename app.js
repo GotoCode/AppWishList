@@ -8,6 +8,10 @@ var wishList = [];
 
 var newItems = 0;
 
+// contains search results pertaining to most recent search
+
+var searchResults = [];
+
 
 function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy code
 {
@@ -141,6 +145,13 @@ function addWishListItem(event)
 	newItems++;
 
 	displayNewItemsBadge();
+
+	// remove the add button from this item, since it's already on the wish list
+	if (!event.target.classList.contains("symbol-hide"))
+	{
+		console.log("added the class!"); // dummy code
+		event.target.classList.add("symbol-hide");
+	}
 
 	event.preventDefault(); // dummy code
 
@@ -302,6 +313,10 @@ function showSearchList()
 	$("#list-view").slideUp();
 	$("#search-view").slideDown();
 
+	document.getElementById("search-results").innerHTML = "";
+
+	displayResults(searchResults);
+
 	$("#list-menu-button").removeClass("active");
 	$("#search-menu-button").addClass("active");
 }
@@ -332,16 +347,41 @@ function searchAppStore(e)
 
 		var results = data.results;
 
+		searchResults = data.results;
+
 		displayResults(results);
 
 	});
 }
 
 
+function wishListContains(appName)
+{
+	//console.log("appName:", appName); // dummy code
+	//console.log(wishList); // dummy code
+
+	for (var i = 0; i < wishList.length; i++)
+	{
+		if (wishList[i].name == appName)
+		{
+			//console.log("wishList item:", wishList[i].name); // dummy code
+			return true;
+		}
+
+		//console.log("wishList item:", wishList[i].name == appName);
+	}
+
+	return false;
+}
+
+
 function displayResults(results)
 {
 	// hide the loading symbol
-	$("#loading-symbol").addClass("symbol-hide");
+	if (!document.getElementById("loading-symbol").classList.contains("symbol-hide"))
+	{
+		$("#loading-symbol").addClass("symbol-hide");
+	}
 
 	// display search results on the page
 	for (var i = 0; i < results.length; i++)
@@ -375,10 +415,17 @@ function displayResults(results)
 
 		aNode.appendChild(badgeNode);
 
-		var addDiv = document.createElement("div");
+		inWishList = wishListContains(results[i].trackName);
 
-		addDiv.classList.add("add-btn-" + i);
-		addDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-plus-circle' aria-hidden='false'></i>";
+		//console.log("inWishList:", inWishList); // dummy code
+
+		if (!inWishList)
+		{
+			var addDiv = document.createElement("div");
+
+			addDiv.classList.add("add-btn-" + i);
+			addDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-plus-circle' aria-hidden='false'></i>";
+		}
 
 		//aNode.appendChild(addDiv);
 
@@ -389,7 +436,10 @@ function displayResults(results)
 
 		$("#search-results #item-" + i).prepend(imgNode);
 
-		$("#search-results #item-" + i).prepend(addDiv);
+		if (!inWishList)
+		{
+			$("#search-results #item-" + i).prepend(addDiv);
+		}
 
 		//console.log(results[i].artworkUrl60); // dummy code
 
