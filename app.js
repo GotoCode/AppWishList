@@ -2,9 +2,11 @@
 
 // array to store entries in wish list
 
-//var numCalls = 0;
-
 var wishList = [];
+
+// number of new items added wishlist
+
+var newItems = 0;
 
 
 function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy code
@@ -100,6 +102,25 @@ function populateList()
 }
 
 
+function displayNewItemsBadge()
+{
+	var newItemsBadge = document.getElementById("new-item-badge");
+
+	if (newItems > 0)
+	{
+		// display the count of new items
+
+		newItemsBadge.innerText = String(newItems);
+	}
+	else
+	{
+		// no new items have been added
+
+		newItemsBadge.innerText = "";
+	}
+}
+
+
 function addWishListItem(event)
 {
 	//console.log(event.data); // dummy code
@@ -114,6 +135,12 @@ function addWishListItem(event)
 	//console.log(event.data); // dummy code
 
 	wishList.push(event.data);
+
+	// display updated count of new items
+
+	newItems++;
+
+	displayNewItemsBadge();
 
 	event.preventDefault(); // dummy code
 
@@ -261,6 +288,10 @@ function showWishList()
 	$("#list-menu-button").addClass("active");
 
 	displayList(wishList);
+
+	// reset the count of new items
+	newItems = 0;
+	displayNewItemsBadge();
 }
 
 
@@ -420,6 +451,8 @@ $( document ).ready(function() {
 		console.log(window.localStorage); // dummy code
 		populateList();
 	}
+
+	displayNewItemsBadge();
 
 });
 

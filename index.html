@@ -2,8 +2,6 @@
 	
 	GOALS
 	
-	- Provide UI to clearly indicate that a new item has been added to wish list (notification-style?)
-	- Find a way to remove the "reformat entire localStorage" step entirely
 	- Separate styling into a separate CSS file
 	- Prevent user from adding an app when it's already on the wishlist
 	- Indicate to user that an app cannot be added (because it's already on the wishlist)
@@ -12,8 +10,11 @@
 	- Make the app mobile-responsive
 	- Adjust margin-left on price badges
 	- Align all list-item content onto a single reference line
+	- Find a way to remove the "reformat entire localStorage" step entirely
 	- Add "paginated search results" feature
 	- Add suggestions for new apps based on those currently on wish list (optional)
+	- Integrate with FireBase for persistence beyond the local cache
+	- Persist count of new items even after the page has been refreshed
 	
 -->
 
@@ -121,7 +122,7 @@
 <div id="top">
 
 	<ul id="mode-select" class="nav nav-tabs">
-		<li role="presentation" id="list-menu-button"><a href="#">List</a></li>
+		<li role="presentation" id="list-menu-button"><a href="#">List <span id="new-item-badge" class="badge"></span></a></li>
 		<li role="presentation" id="search-menu-button" class="active"><a href="#">Search</a></li>
 	</ul>
 
