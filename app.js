@@ -13,7 +13,7 @@ var newItems = 0;
 var searchResults = [];
 
 
-function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy code
+function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  // dummy code
 {
 	//numCalls++;
 
@@ -22,10 +22,18 @@ function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy co
 	//console.log(numCalls);
 	//console.log(targetNode);
 
+	console.log("before oldPrice:", items[index].newPrice);
+	console.log("before newPrice:", data.results[0].formattedPrice);
+
 	var prevPrice = oldPrice;
 
-	var formattedPrice = data.results[0].formattedPrice;
-	var nextPrice = prevPrice;
+	//console.log("newPrice:", newPrice); // dummy code
+
+	var formattedPrice = data.results[0].formattedPrice; // dummy code
+	var nextPrice      = prevPrice;
+
+	console.log("after oldPrice:", oldPrice); // dummy code
+	console.log("after newPrice:", newPrice); // dummy code
 
 	// replace the ternary operator with if-else statements
 
@@ -95,8 +103,10 @@ function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy co
 		items[index].newPrice = formattedPrice;
 	}
 
-	console.log("nextPrice:", nextPrice); // dummy code
-	console.log("prevPrice:", prevPrice); // dummy code
+	//console.log("nextPrice:", nextPrice); // dummy code
+	//console.log("prevPrice:", prevPrice); // dummy code
+
+	//waitingForResponse = false;
 
 	//console.log("new oldPrice:", items[index].oldPrice);
 	//console.log("new newPrice:", items[index].newPrice);
@@ -169,9 +179,13 @@ function addWishListItem(event)
 
 function deleteWishListItem(event)
 {
+	// prevent handling of anchor tag click-through
+	event.preventDefault();
 
 	// determine which list item needs to be removed
 	var index = Number(/remove-btn-(\d+)/.exec(event.currentTarget.getAttribute("class"))[1]);
+
+	//document.getElementById("list-results").innerHTML = "";
 
 	//console.log(index); // dummy code
 
@@ -204,12 +218,11 @@ function deleteWishListItem(event)
 				console.log(document.getElementById("item-" + i)) // dummy code
 			}*/
 		}
-		
-		document.getElementById("list-results").innerHTML = "";
 
-		displayList(wishList, false);
+		//displayList(wishList, false);
 
-		event.preventDefault();
+		// remove this item from the wishlist (without affecting the others)
+		$("#list-results #item-" + index).detach();
 
 		//console.log(wishList); // dummy code
 	}
@@ -220,6 +233,108 @@ function deleteWishListItem(event)
 	//event.currentTarget.outerHTML = ""
 
 	//document.getElementById("item" + index).outerHTML = "";
+}
+
+
+function testFunction(items, index, data)
+{
+	console.log("items:", items); // dummy code
+	console.log("index:", index); // dummy code
+
+	console.log("oldPrice:", items[index].oldPrice);          // dummy code
+	console.log("newPrice:", data.results[0].formattedPrice); // dummy code
+
+	var prevPrice = 0;
+	var nextPrice = 0;
+
+	if (items[index].oldPrice != "Free")
+	{
+		prevPrice = Number(/.(\d+\.\d+)/.exec(items[index].oldPrice)[1]);
+	}
+
+	if (data.results[0].formattedPrice != "Free")
+	{
+		nextPrice = Number(/.(\d+\.\d+)/.exec(data.results[0].formattedPrice)[1]);
+	}
+
+	var redItemColor   = "list-group-item-danger";
+	var greenItemColor = "list-group-item-success";
+
+	var targetNode = document.querySelector("#list-results #item-" + index);
+
+	//console.log("targetNode:", targetNode); // dummy code
+
+	// DEBUG ONLY //
+	/*
+	if (nextPrice == 0.99)
+	{
+		nextPrice += 1;
+	}
+	else
+	{
+		nextPrice -= 1;
+	}
+	*/
+
+	console.log("prevPrice:", prevPrice); // dummy code
+	//console.log("nextPrice:", nextPrice); // dummy code
+
+	if (nextPrice < prevPrice)
+	{
+		// make the background GREEN
+		
+		if (targetNode.classList.contains(redItemColor))
+			targetNode.classList.remove(redItemColor);
+
+		if (!targetNode.classList.contains(greenItemColor))
+			targetNode.classList.add(greenItemColor);
+	}
+	else if (nextPrice > prevPrice)
+	{
+		// make the background RED
+
+		if (targetNode.classList.contains(greenItemColor))
+			targetNode.classList.remove(greenItemColor);
+
+		if (!targetNode.classList.contains(redItemColor))
+			targetNode.classList.add(redItemColor);
+	}
+	else
+	{
+		// make the background NEUTRAL
+
+		if (targetNode.classList.contains(greenItemColor))
+			targetNode.classList.remove(greenItemColor);
+
+		if (targetNode.classList.contains(redItemColor))
+			targetNode.classList.remove(redItemColor);
+	}
+
+	// update the price of the app to the latest up-to-date value
+	
+	console.log("nextPrice:", nextPrice);
+
+	items[index].oldPrice = data.results[0].formattedPrice;
+
+	console.log(items[index].oldPrice); // dummy code
+
+	// update the price badge with the new price value
+	$("#list-results #item-" + index + " .badge").text(items[index].oldPrice);
+
+	// allow user to remove app only AFTER we have computed the price change
+
+	var removeDiv = document.createElement("div");
+
+	removeDiv.classList.add("remove-btn-" + index);
+	removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
+
+	$("#list-results #item-" + index).prepend(removeDiv);
+
+	removeDiv.addEventListener("click", deleteWishListItem);
+
+	console.log("targetNode:", targetNode); // dummy code
+
+	console.log("");
 }
 
 
@@ -264,33 +379,41 @@ function displayList(items, updateItems)
 
 		newPrice = items[i].newPrice; // dummy code
 
-		badgeNode.innerText = items[i].newPrice; // uncomment this when ready...
+		badgeNode.innerText = items[i].oldPrice; // uncomment this when ready...
 
 		aNode.appendChild(badgeNode);
 
 		//aNode.addEventListener("click", deleteWishListItem);
 
+		/*
 		var removeDiv = document.createElement("div");
 
 		//aNode.setAttribute("id", "item-" + i);
 		removeDiv.classList.add("remove-btn-" + i);
 		removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
+		*/
 
 		var iTunesUrl = "https://itunes.apple.com/search";
 		var queryData = {term : items[i].name, country : "US", limit : "10", entity : "software"};
 
 		//console.log(wishList[j].name, wishList[j].newPrice); // dummy code
 
+		//while (waitingForResponse);
+
 		// retrieve search results from iTunes server
 		/*$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));*/
 
 		if (updateItems)
 		{
+			//waitingForResponse = true;
+
+			//console.log(wishList[i]); // dummy code
+
 			$.ajax({
 			url : iTunesUrl,
 			dataType : "jsonp",
 			data : queryData,
-			success : updateItemStatus.bind(null, items, i, aNode, newPrice)
+			success : testFunction.bind(null, items, i)
 			});
 		}
 
@@ -298,9 +421,21 @@ function displayList(items, updateItems)
 		
 		$("#list-results #item-" + i).prepend(imgNode);
 
-		$("#list-results #item-" + i).prepend(removeDiv);
+		// if we didn't fetch any results from server, then keep the remove button as is
 
-		removeDiv.addEventListener("click", deleteWishListItem);
+		if (!updateItems)
+		{
+			var removeDiv = document.createElement("div");
+
+			removeDiv.classList.add("remove-btn-" + i);
+			removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
+
+			$("#list-results #item-" + i).prepend(removeDiv);
+
+			removeDiv.addEventListener("click", deleteWishListItem);
+		}
+
+		//removeDiv.addEventListener("click", deleteWishListItem);
 	}
 }
 
