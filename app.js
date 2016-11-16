@@ -95,6 +95,9 @@ function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy co
 		items[index].newPrice = formattedPrice;
 	}
 
+	console.log("nextPrice:", nextPrice); // dummy code
+	console.log("prevPrice:", prevPrice); // dummy code
+
 	//console.log("new oldPrice:", items[index].oldPrice);
 	//console.log("new newPrice:", items[index].newPrice);
 }
@@ -204,7 +207,7 @@ function deleteWishListItem(event)
 		
 		document.getElementById("list-results").innerHTML = "";
 
-		displayList(wishList);
+		displayList(wishList, false);
 
 		event.preventDefault();
 
@@ -220,7 +223,7 @@ function deleteWishListItem(event)
 }
 
 
-function displayList(items)
+function displayList(items, updateItems)
 {
 	var wishList = items;
 	var j = 0;
@@ -281,12 +284,15 @@ function displayList(items)
 		// retrieve search results from iTunes server
 		/*$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));*/
 
-		$.ajax({
+		if (updateItems)
+		{
+			$.ajax({
 			url : iTunesUrl,
 			dataType : "jsonp",
 			data : queryData,
 			success : updateItemStatus.bind(null, items, i, aNode, newPrice)
-		});
+			});
+		}
 
 		$("#list-results").append(aNode);
 		
@@ -310,7 +316,7 @@ function showWishList()
 	$("#search-menu-button").removeClass("active");
 	$("#list-menu-button").addClass("active");
 
-	displayList(wishList);
+	displayList(wishList, true);
 
 	// reset the count of new items
 	newItems = 0;
