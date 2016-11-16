@@ -85,10 +85,15 @@ function updateItemStatus(items, index, targetNode, oldPrice, data)  // dummy co
 		//targetNode.classList.add(greenItemColor); // dummy code
 	}
 
-	// update the price for the given app
+	// if the user has already deleted the app from their 
+	// wish list, there's no point in getting the updated price
+	if (items[index])
+	{
+		// update the price for the given app
 
-	items[index].oldPrice = items[index].newPrice;
-	items[index].newPrice = formattedPrice;
+		items[index].oldPrice = items[index].newPrice;
+		items[index].newPrice = formattedPrice;
+	}
 
 	//console.log("new oldPrice:", items[index].oldPrice);
 	//console.log("new newPrice:", items[index].newPrice);
