@@ -185,8 +185,6 @@ function deleteWishListItem(event)
 	// determine which list item needs to be removed
 	var index = Number(/remove-btn-(\d+)/.exec(event.currentTarget.getAttribute("class"))[1]);
 
-	//document.getElementById("list-results").innerHTML = "";
-
 	//console.log(index); // dummy code
 
 	//console.log(event.currentTarget.getAttribute("id")) // dummy code
@@ -219,10 +217,12 @@ function deleteWishListItem(event)
 			}*/
 		}
 
-		//displayList(wishList, false);
+		document.getElementById("list-results").innerHTML = "";
+		
+		displayList(wishList, false);
 
 		// remove this item from the wishlist (without affecting the others)
-		$("#list-results #item-" + index).detach();
+		//$("#list-results #item-" + index).detach();
 
 		//console.log(wishList); // dummy code
 	}
