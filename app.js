@@ -167,7 +167,7 @@ function deleteWishListItem(event)
 
 	//console.log(index); // dummy code
 
-	console.log(event.currentTarget.getAttribute("id")) // dummy code
+	//console.log(event.currentTarget.getAttribute("id")) // dummy code
 	console.log(wishList.splice(index, 1)); // dummy code
 
 	if (hasLocalStorage())
@@ -274,7 +274,14 @@ function displayList(items)
 		//console.log(wishList[j].name, wishList[j].newPrice); // dummy code
 
 		// retrieve search results from iTunes server
-		$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));
+		/*$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));*/
+
+		$.ajax({
+			url : iTunesUrl,
+			dataType : "jsonp",
+			data : queryData,
+			success : updateItemStatus.bind(null, items, i, aNode, newPrice)
+		});
 
 		$("#list-results").append(aNode);
 		
@@ -341,7 +348,7 @@ function searchAppStore(e)
 	var queryData = {term : searchText, country : "US", limit : "10", entity : "software"};
 
 	// retrieve search results from iTunes server
-	$.getJSON(iTunesUrl, queryData, function(data) {
+	/*$.getJSON(iTunesUrl, queryData, function(data) {
 
 		console.log(data); // dummy code
 
@@ -351,7 +358,21 @@ function searchAppStore(e)
 
 		displayResults(results);
 
-	});
+	});*/
+
+	$.ajax({
+			url : iTunesUrl,
+			dataType : "jsonp",
+			data : queryData,
+			success : function(data) {
+
+				console.log(data); // dummy code
+
+				searchResults = data.results;
+
+				displayResults(searchResults);
+			}
+		});
 }
 
 

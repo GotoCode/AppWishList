@@ -2,9 +2,6 @@
 	
 	GOALS
 	
-	- Add ratings (as stars) under each app's name (optional)
-	- Allow users to add more list categories (i.e. holiday gifts, paid only, free only)
-	- Make the app mobile-responsive
 	- Adjust margin-left on price badges
 	- Align all list-item content onto a single reference line
 	- Find a way to remove the "reformat entire localStorage" step entirely
@@ -13,6 +10,9 @@
 	- Integrate with FireBase for persistence beyond the local cache
 	- Persist count of new items even after the page has been refreshed
 	- Increase hitbox size for "add" and "remove" buttons
+	- Add ratings (as stars) under each app's name (optional)
+	- Allow users to add more list categories (i.e. holiday gifts, paid only, free only)
+	- Prevent app name text from getting crushed on mobile devices
 	
 -->
 
@@ -23,6 +23,7 @@
 
 <title>App Wish List</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"></meta>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" 
 crossorigin="anonymous"></script>
@@ -51,7 +52,7 @@ crossorigin="anonymous"></script>
 
 <body>
 
-<div id="top">
+<div id="top" class="container-fluid">
 
 	<ul id="mode-select" class="nav nav-tabs">
 		<li role="presentation" id="list-menu-button"><a href="#">List <span id="new-item-badge" class="badge"></span></a></li>
