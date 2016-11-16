@@ -436,7 +436,9 @@ function displayResults(results)
 
 		//aNode.setAttribute("role", "button"); // dummy code
 
-		aNode.innerText = results[i].trackName + " - " + results[i].artistName;
+		// commented out until we find a better way of displaying the necessary info...
+
+		aNode.innerText = results[i].trackName; //+ " - " + results[i].artistName;
 
 		var badgeNode = document.createElement("span");
 
