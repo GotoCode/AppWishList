@@ -190,16 +190,22 @@ function deleteWishListItem(event)
 	//console.log(event.currentTarget.getAttribute("id")) // dummy code
 	console.log(wishList.splice(index, 1)); // dummy code
 
+	//console.log(document.querySelector("#list-results #item-" + index)); // dummy code
+
+	// remove this item from the wishlist (without affecting the others)
+	$("#list-results #item-" + index).detach();
+
 	if (hasLocalStorage())
 	{
 		var storage = window.localStorage;
 
 		storage.removeItem("item-" + index);
 
-		// adjust indices for all other items in localStorage...
+		// re-adjust indices for each item in localStorage
 
 		if (wishList.length > 0)
 		{
+
 			for (var i = index + 1; ; i++)
 			{
 				var storageItem = storage["item-" + i];
@@ -217,14 +223,41 @@ function deleteWishListItem(event)
 			}*/
 		}
 
-		document.getElementById("list-results").innerHTML = "";
-		
-		displayList(wishList, false);
+		//document.getElementById("list-results").innerHTML = "";
 
-		// remove this item from the wishlist (without affecting the others)
-		//$("#list-results #item-" + index).detach();
+		//displayList(wishList, false);
 
 		//console.log(wishList); // dummy code
+	}
+
+	// re-adjust indices for each remove-btn
+	for (var i = index + 1; ; i++)
+	{
+		try
+		{
+			var removeButton = document.getElementsByClassName("remove-btn-" + i)[0]
+
+			removeButton.classList.remove("remove-btn-" + i);
+			removeButton.classList.add("remove-btn-" + (i - 1));
+
+			console.log(removeButton); // dummy code
+		}
+		catch (e)
+		{
+			break;
+		}
+	}
+
+	// re-adjust indices for each listed item
+	for (var i = index + 1; ; i++)
+	{
+		var aNode = document.querySelector("#list-results #item-" + i);
+
+		if (!aNode) break;
+
+		aNode.setAttribute("id", "item-" + (i - 1));
+
+		console.log(aNode); // dummy code
 	}
 
 	//event.currentTarget.parentNode.innerHTML = ""; // dummy code
@@ -265,14 +298,15 @@ function testFunction(items, index, data)
 	//console.log("targetNode:", targetNode); // dummy code
 
 	// DEBUG ONLY //
+	
 	/*
-	if (nextPrice == 0.99)
+	if (nextPrice == 0)
 	{
-		nextPrice += 1;
+		nextPrice += 1.99;
 	}
 	else
 	{
-		nextPrice -= 1;
+		nextPrice -= 0.99;
 	}
 	*/
 
