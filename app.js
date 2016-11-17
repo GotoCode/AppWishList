@@ -348,7 +348,15 @@ function testFunction(items, index, data)
 	
 	console.log("nextPrice:", nextPrice);
 
+	// update the current wish list
 	items[index].oldPrice = data.results[0].formattedPrice;
+
+	// update localStorage to reflect this change
+	var itemInfo = JSON.parse(window.localStorage["item-" + index]);
+
+	itemInfo.oldPrice = data.results[0].formattedPrice;
+
+	window.localStorage["item-" + index] = JSON.stringify(itemInfo);
 
 	console.log(items[index].oldPrice); // dummy code
 
