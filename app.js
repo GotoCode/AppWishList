@@ -348,13 +348,17 @@ function testFunction(items, index, data)
 	
 	console.log("nextPrice:", nextPrice);
 
+	var updatedTime = Date.now();
+
 	// update the current wish list
 	items[index].oldPrice = data.results[0].formattedPrice;
+	items[index].lastUpdated = updatedTime;
 
 	// update localStorage to reflect this change
 	var itemInfo = JSON.parse(window.localStorage["item-" + index]);
 
-	itemInfo.oldPrice = data.results[0].formattedPrice;
+	itemInfo.oldPrice    = data.results[0].formattedPrice;
+	itemInfo.lastUpdated = updatedTime;
 
 	window.localStorage["item-" + index] = JSON.stringify(itemInfo);
 
@@ -380,7 +384,7 @@ function testFunction(items, index, data)
 }
 
 
-function displayList(items, updateItems)
+function displayList(items)
 {
 	var wishList = items;
 	var j = 0;
@@ -445,6 +449,11 @@ function displayList(items, updateItems)
 		// retrieve search results from iTunes server
 		/*$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));*/
 
+		var currTime = Date.now();
+
+		var updateItems = items[i].lastUpdated == undefined || (currTime - items[i].lastUpdated) / (60*60*1000) > 1;
+
+		// if the price for this app was retrieved more than an hour ago...
 		if (updateItems)
 		{
 			//waitingForResponse = true;
