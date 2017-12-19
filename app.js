@@ -1,10 +1,12 @@
-
+// 
+// Main Application Logic
+// 
 
 // array to store entries in wish list
 
 var wishList = [];
 
-// number of new items added wishlist
+// number of new items added to wishlist
 
 var newItems = 0;
 
@@ -12,37 +14,32 @@ var newItems = 0;
 
 var searchResults = [];
 
-
-function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  // dummy code
+// TODO
+function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 {
-	//numCalls++;
-
-	//var oldPrice = oldPrice == "Free" ? 0 : parseInt(/.(\d+\.\d+)/.exec(oldPrice)[1]);
-
-	//console.log(numCalls);
-	//console.log(targetNode);
-
-	console.log("before oldPrice:", items[index].newPrice);
-	console.log("before newPrice:", data.results[0].formattedPrice);
+	//console.log("before oldPrice:", items[index].newPrice);
+	//console.log("before newPrice:", data.results[0].formattedPrice);
 
 	var prevPrice = oldPrice;
 
 	//console.log("newPrice:", newPrice); // dummy code
 
-	var formattedPrice = data.results[0].formattedPrice; // dummy code
+	var formattedPrice = data.results[0].formattedPrice;
 	var nextPrice      = prevPrice;
 
-	console.log("after oldPrice:", oldPrice); // dummy code
-	console.log("after newPrice:", newPrice); // dummy code
+	//console.log("after oldPrice:", oldPrice); // dummy code
+	//console.log("after newPrice:", newPrice); // dummy code
 
 	// replace the ternary operator with if-else statements
 
 	if (oldPrice === "Free")
 	{
+        // 'Free' corresponds to a numeric price of 0 (zero)
 		prevPrice = 0;
 	}
 	else
 	{
+        // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
 		prevPrice = Number(/.(\d+\.\d+)/.exec(oldPrice)[1]);
 	}
 
@@ -50,26 +47,31 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  /
 
 	if (formattedPrice == "Free")
 	{
+        // 'Free' corresponds to a numeric price of 0 (zero)
 		nextPrice = 0;
 	}
 	else
 	{
+        // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
 		nextPrice = Number(/.(\d+\.\d+)/.exec(formattedPrice)[1]);
 	}
 
-	var redItemColor   = "list-group-item-danger";
-	var greenItemColor = "list-group-item-success";
-
+    // class names for coloring list item backgrounds
+	var redItemColor   = "list-group-item-danger";  // price increase color
+	var greenItemColor = "list-group-item-success"; // price decrease color
+    
+    // if the app price has dropped...
 	if (nextPrice < prevPrice)
 	{
 		// color the list item for this app GREEN
-
+        
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
 
 		if (!targetNode.classList.contains(greenItemColor))
 			targetNode.classList.add(greenItemColor);
 	}
+    // if the app price has increased...
 	else if (nextPrice > prevPrice)
 	{
 		// color the list item for this app RED
@@ -80,6 +82,7 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  /
 		if (!targetNode.classList.contains(redItemColor))
 			targetNode.classList.add(redItemColor);
 	}
+    // if the app price is unchanged...
 	else
 	{
 		// set color to NEUTRAL for this list-item
@@ -89,16 +92,12 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  /
 
 		if (targetNode.classList.contains(greenItemColor))
 			targetNode.classList.remove(greenItemColor);
-
-		//targetNode.classList.add(greenItemColor); // dummy code
 	}
 
-	// if the user has already deleted the app from their 
-	// wish list, there's no point in getting the updated price
+	// if the app has not yet been deleted...
 	if (items[index])
 	{
 		// update the price for the given app
-
 		items[index].oldPrice = items[index].newPrice;
 		items[index].newPrice = formattedPrice;
 	}
@@ -112,7 +111,7 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)  /
 	//console.log("new newPrice:", items[index].newPrice);
 }
 
-
+// TODO
 function populateList()
 {
 	var storage = window.localStorage;
@@ -123,7 +122,7 @@ function populateList()
 	}
 }
 
-
+// TODO
 function displayNewItemsBadge()
 {
 	var newItemsBadge = document.getElementById("new-item-badge");
@@ -142,11 +141,9 @@ function displayNewItemsBadge()
 	}
 }
 
-
+// CONTINUE CODE REVIEW HERE //
 function addWishListItem(event)
 {
-	//console.log(event.data); // dummy code
-
 	if (hasLocalStorage())
 	{
 		var storage = window.localStorage;
@@ -176,7 +173,7 @@ function addWishListItem(event)
 	//console.log(window.localStorage); // dummy code
 }
 
-
+// TODO
 function deleteWishListItem(event)
 {
 	// prevent handling of anchor tag click-through
@@ -268,7 +265,7 @@ function deleteWishListItem(event)
 	//document.getElementById("item" + index).outerHTML = "";
 }
 
-
+// TODO
 function testFunction(items, index, data)
 {
 	console.log("items:", items); // dummy code
@@ -310,7 +307,7 @@ function testFunction(items, index, data)
 	}
 	*/
 
-	console.log("prevPrice:", prevPrice); // dummy code
+	//console.log("prevPrice:", prevPrice); // dummy code
 	//console.log("nextPrice:", nextPrice); // dummy code
 
 	if (nextPrice < prevPrice)
@@ -383,7 +380,7 @@ function testFunction(items, index, data)
 	console.log("");
 }
 
-
+// TODO
 function displayList(items)
 {
 	var wishList = items;
@@ -490,7 +487,7 @@ function displayList(items)
 	}
 }
 
-
+// TODO
 function showWishList()
 {
 
@@ -509,7 +506,7 @@ function showWishList()
 	displayNewItemsBadge();
 }
 
-
+// TODO
 function showSearchList()
 {
 	document.getElementById("list-results").innerHTML = "";
@@ -525,92 +522,78 @@ function showSearchList()
 	$("#search-menu-button").addClass("active");
 }
 
-
+// constructs a search query object and uses it to
+// search iTunes for results matching the given query
+// specified by the user in the 'Search...' input field
 function searchAppStore(e)
 {
-	e.preventDefault(); // there is not form to submit...
+    // override the default 'submit button' functionality
+	e.preventDefault();
 
-	// reset the list of search results
+	// clear the list of search results
 	$("a.list-group-item").replaceWith("");
 
-	// show the loading symbol
+	// display the loading symbol
 	$("#loading-symbol").removeClass("symbol-hide");
 
-	// base url of iTunes server
+	// base url for iTunes Search API
 	var iTunesUrl = "https://itunes.apple.com/search";
 
-	// retrieve data from search field
+	// retrieve search query from 'Search...' text field
 	var searchText = $("#search-field").val();
-
+    
+    // specify parameters & meta-data for search query
 	var queryData = {term : searchText, country : "US", limit : "10", entity : "software"};
-
-	// retrieve search results from iTunes server
-	/*$.getJSON(iTunesUrl, queryData, function(data) {
-
-		console.log(data); // dummy code
-
-		var results = data.results;
-
-		searchResults = data.results;
-
-		displayResults(results);
-
-	});*/
-
+    
+    // send an (async) GET request to the Search API using the given query data
 	$.ajax({
 			url : iTunesUrl,
 			dataType : "jsonp",
 			data : queryData,
 			success : function(data) {
-
-				console.log(data); // dummy code
-
+                // display the list of search results in the GUI
 				searchResults = data.results;
-
 				displayResults(searchResults);
 			}
 		});
 }
 
-
+// function to search for a given app (by name) in the user's wish list
 function wishListContains(appName)
 {
-	//console.log("appName:", appName); // dummy code
-	//console.log(wishList); // dummy code
-
 	for (var i = 0; i < wishList.length; i++)
 	{
 		if (wishList[i].name == appName)
 		{
-			//console.log("wishList item:", wishList[i].name); // dummy code
 			return true;
 		}
-
-		//console.log("wishList item:", wishList[i].name == appName);
 	}
 
 	return false;
 }
 
-
+// displays (& configures) a list of UI elements which shows the user each item in the list of search results
 function displayResults(results)
 {
-	// hide the loading symbol
+	// if the loading symbol is (currently) visible ==> hide it from view
 	if (!document.getElementById("loading-symbol").classList.contains("symbol-hide"))
 	{
 		$("#loading-symbol").addClass("symbol-hide");
 	}
 
-	// display search results on the page
+	// iterate over each item in the given list and
+    // display the various fields for each object
+    // by building up a 'container' UI element
 	for (var i = 0; i < results.length; i++)
 	{
-		//var listNode = document.createElement("li");
-
+        // create container for app icon
 		var imgNode = document.createElement("img");
 
 		imgNode.setAttribute("src", results[i].artworkUrl60);
 		imgNode.setAttribute("class", "app-icon");
 
+        // create container for the app name, which redirects
+        // to the iOS app store when the user clicks on it
 		var aNode = document.createElement("a");
 		
 		aNode.setAttribute("href", "#");
@@ -620,25 +603,21 @@ function displayResults(results)
 		aNode.setAttribute("href", results[i].trackViewUrl);
 		aNode.setAttribute("target", "_blank");
 
-		//aNode.setAttribute("role", "button"); // dummy code
+		aNode.innerText = results[i].trackName;
 
-		// commented out until we find a better way of displaying the necessary info...
-
-		aNode.innerText = results[i].trackName; //+ " - " + results[i].artistName;
-
+        // create container for the app's price
 		var badgeNode = document.createElement("span");
 
 		badgeNode.setAttribute("class", "badge");
-		//badgeNode.setAttribute("style", "margin: 5px;");
 
 		badgeNode.innerText = results[i].formattedPrice;
-
+        
+        // attach the price alongside the 'app name' element
 		aNode.appendChild(badgeNode);
-
+        
 		inWishList = wishListContains(results[i].trackName);
-
-		//console.log("inWishList:", inWishList); // dummy code
-
+        
+        // if this item is not already in our wish list ==> create an 'add item' UI element
 		if (!inWishList)
 		{
 			var addDiv = document.createElement("div");
@@ -646,31 +625,21 @@ function displayResults(results)
 			addDiv.classList.add("add-btn-" + i);
 			addDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-plus-circle' aria-hidden='false'></i>";
 		}
-
-		//aNode.appendChild(addDiv);
-
-		//listNode.setAttribute("class", "search-result-item");
-		//listNode.innerHTML = "<a href='#' class='list-group-item'>" + results[i].trackName + " - " + results[i].artistName + "</a>";
-
+        
+        // add the newly created container element to the full list of search results
 		$("#search-results").append(aNode);
-
+        
+        // insert the app icon within the container UI element
 		$("#search-results #item-" + i).prepend(imgNode);
-
+        
+        // insert the 'add item' button within the container UI element
 		if (!inWishList)
 		{
 			$("#search-results #item-" + i).prepend(addDiv);
 		}
-
-		//console.log(results[i].artworkUrl60); // dummy code
-
-		/*$("a#item-" + i).on("click", { name : results[i].trackName, 
-									   icon : results[i].artworkUrl60,
-									   publisher : results[i].artistName, 
-									   oldPrice : results[i].formattedPrice, 
-									   newPrice : results[i].formattedPrice }, addWishListItem);*/
-	
-		// dummy code
-
+        
+        // set up a callback function which adds this item to the
+        // user's wish list when they click the 'add item' button
 		$("#search-results #item-" + i + " .add-btn-" + i).on("click", { name : results[i].trackName, 
 									   									 icon : results[i].artworkUrl60,
 									   									 infoUrl : results[i].trackViewUrl,
@@ -680,7 +649,7 @@ function displayResults(results)
 	}
 }
 
-
+// TODO
 function hasLocalStorage()
 {
 	try
@@ -701,27 +670,29 @@ function hasLocalStorage()
 	}
 }
 
-
+// TODO
 $( document ).ready(function() {
-
+    
+    // trigger the searchAppStore function when the user clicks the 'Search' button
 	$("#search-button").on("click", searchAppStore);
-
+    
+    // trigger the showWishList function when the user clicks the 'Search' tab menu item
 	$("#list-menu-button").on("click", showWishList);
-
+    
+    // trigger the showSearchList function when the user clicks the 'List' tab menu item
 	$("#search-menu-button").on("click", showSearchList);
 
-	// hide the loading symbol on booting up
-
+	// hide the 'results loading' symbol when the app first starts up
 	$("#loading-symbol").addClass("symbol-hide");
 
-	// pre-populate the wish list with any items we added during the last session
-
+	// pre-populate the wish list with any items we saved during the previous session
 	if (hasLocalStorage())
 	{
-		console.log(window.localStorage); // dummy code
+		//console.log(window.localStorage);
 		populateList();
 	}
-
+    
+    // display the number of new items added to the wish list
 	displayNewItemsBadge();
 
 });
