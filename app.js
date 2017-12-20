@@ -14,85 +14,6 @@ var newItems = 0;
 
 var searchResults = [];
 
-// updates the i-th (index) item in the user's wish list (items)
-// and modifies the wish list UI to reflect the newly updated info
-/*function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
-{
-	var prevPrice = oldPrice;
-
-	var formattedPrice = data.results[0].formattedPrice;
-	var nextPrice      = prevPrice;
-
-	// if the 'old price' string is set to 'Free'...
-	if (oldPrice === "Free")
-	{
-        // 'Free' corresponds to a numeric price of 0 (zero)
-		prevPrice = 0;
-	}
-    // else if the 'old price' string contains a valid non-zero price...
-	else
-	{
-        // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
-		prevPrice = Number(/.(\d+\.\d+)/.exec(oldPrice)[1]);
-	}
-
-	// if the 'App Store' price is set to 'Free'...
-	if (formattedPrice == "Free")
-	{
-        // 'Free' corresponds to a numeric price of 0 (zero)
-		nextPrice = 0;
-	}
-    // else if the 'App Store' price is a valid, non-zero price...
-	else
-	{
-        // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
-		nextPrice = Number(/.(\d+\.\d+)/.exec(formattedPrice)[1]);
-	}
-
-    // class names for coloring list item backgrounds
-	var redItemColor   = "list-group-item-danger";  // price increase color
-	var greenItemColor = "list-group-item-success"; // price decrease color
-    
-    // if the app price has dropped...
-	if (nextPrice < prevPrice)
-	{
-		// color the list item for this app GREEN
-		if (targetNode.classList.contains(redItemColor))
-			targetNode.classList.remove(redItemColor);
-
-		if (!targetNode.classList.contains(greenItemColor))
-			targetNode.classList.add(greenItemColor);
-	}
-    // if the app price has increased...
-	else if (nextPrice > prevPrice)
-	{
-		// color the list item for this app RED
-		if (targetNode.classList.contains(greenItemColor))
-			targetNode.classList.remove(greenItemColor);
-
-		if (!targetNode.classList.contains(redItemColor))
-			targetNode.classList.add(redItemColor);
-	}
-    // if the app price is unchanged...
-	else
-	{
-		// set color to NEUTRAL for this list-item
-		if (targetNode.classList.contains(redItemColor))
-			targetNode.classList.remove(redItemColor);
-
-		if (targetNode.classList.contains(greenItemColor))
-			targetNode.classList.remove(greenItemColor);
-	}
-
-	// if the app has not yet been deleted...
-	if (items[index])
-	{
-		// update the price for the given app
-		items[index].oldPrice = items[index].newPrice;
-		items[index].newPrice = formattedPrice;
-	}
-}*/
-
 // fills the internal wishList data structure with items saved in localStorage
 function populateList()
 {
@@ -285,6 +206,9 @@ function updateWithAppStorePrice(items, index, data)
 
 		if (!targetNode.classList.contains(greenItemColor))
 			targetNode.classList.add(greenItemColor);
+        
+        items[index].priceDrop = true;
+        items[index].priceIncrease = false;
 	}
     // if the price has increased...
 	else if (newPrice > oldPrice)
@@ -295,6 +219,9 @@ function updateWithAppStorePrice(items, index, data)
 
 		if (!targetNode.classList.contains(redItemColor))
 			targetNode.classList.add(redItemColor);
+        
+        items[index].priceIncrease = true;
+        items[index].priceDrop = false;
 	}
     // if the price is unchanged...
 	/*else
@@ -319,6 +246,10 @@ function updateWithAppStorePrice(items, index, data)
 	// retrieve the info for this app from localStorage
     // NOTE: we need to first check if the user has localStorage enabled...
 	var itemInfo = JSON.parse(window.localStorage["item-" + index]);
+    
+    // persist the 'price drop' / 'price increase' information
+    itemInfo.priceDrop = items[index].priceDrop;
+    itemInfo.priceIncrease = items[index].priceIncrease;
     
     // update the price (in localStorage) for this app to the 'App Store' price
 	itemInfo.oldPrice = newInfo.formattedPrice;
@@ -416,7 +347,7 @@ function displayList(items)
         // attach the 'app name' element to the main list UI
 		$("#list-results").append(aNode);
 		
-        // inser the 'app icon' inside the container UI element
+        // insert the 'app icon' inside the container UI element
 		$("#list-results #item-" + i).prepend(imgNode);
         
         var updateItems = (items[i].lastUpdated == undefined || (currTime - items[i].lastUpdated) / (60*60*1000) > 1);
@@ -436,6 +367,33 @@ function displayList(items)
 			removeDiv.addEventListener("click", deleteWishListItem);
 		}
         
+        // classes for coloring each item based on price increase/drop
+        var redItemColor   = "list-group-item-danger";  // price increase
+        var greenItemColor = "list-group-item-success"; // price drop
+
+        // get a reference to the i-th UI element in the wish list
+        var targetNode = document.querySelector("#list-results #item-" + i);
+
+        // if the price has dropped...
+        if (items[i].priceDrop)
+        {
+            // make the background GREEN
+            if (targetNode.classList.contains(redItemColor))
+                targetNode.classList.remove(redItemColor);
+
+            if (!targetNode.classList.contains(greenItemColor))
+                targetNode.classList.add(greenItemColor);
+        }
+        // if the price has increased...
+        else if (items[i].priceIncrease)
+        {
+            // make the background RED
+            if (targetNode.classList.contains(greenItemColor))
+                targetNode.classList.remove(greenItemColor);
+
+            if (!targetNode.classList.contains(redItemColor))
+                targetNode.classList.add(redItemColor);
+        }
 	}
 }
 
@@ -613,7 +571,10 @@ function displayResults(results)
 									   									 infoUrl : results[i].trackViewUrl,
 									   									 publisher : results[i].artistName, 
 									   									 oldPrice : results[i].formattedPrice, 
-									   									 newPrice : results[i].formattedPrice }, addWishListItem);
+									   									 newPrice : results[i].formattedPrice,
+                                                                         priceDrop: false,
+                                                                         priceIncrease: false},
+                                                                         addWishListItem);
 	}
 }
 
