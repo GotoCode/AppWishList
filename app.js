@@ -305,7 +305,7 @@ function updateWithAppStorePrice(items, index, data)
 			targetNode.classList.add(redItemColor);
 	}
     // if the price is unchanged...
-	else
+	/*else
 	{
 		// make the background NEUTRAL
 		if (targetNode.classList.contains(greenItemColor))
@@ -313,7 +313,7 @@ function updateWithAppStorePrice(items, index, data)
 
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
-	}
+	}*/
     
     // compute the timestamp for the current time
 	var updatedTime = Date.now();
