@@ -230,30 +230,12 @@ function getAppInfo(results, appName, appPublisher)
 {
     var res;
     
-    console.log(appName);
-    console.log(appPublisher);
-    
-    console.log(results.length);
-    
     for (var i = 0; i < results.length; i++)
     {
         var currApp = results[i];
         
-        console.log('AppStore - name: ' + currApp.trackName);
-        console.log('AppStore - publisher: ' + currApp.artistName);
-            
-        console.log('AppStore - price: ' + currApp.formattedPrice);
-        
         if (currApp.trackName === appName && currApp.artistName === appPublisher)
-        {
-            console.log('AppStore - name: ' + currApp.trackName);
-            console.log('AppStore - publisher: ' + currApp.artistName);
-            
-            console.log('AppStore - price: ' + currApp.formattedPrice);
-            
-            console.log('WishList - name: ' + appName);
-            console.log('WishList - publisher: ' + appPublisher);
-            
+        {   
             res = results[i];
             break;
         }
