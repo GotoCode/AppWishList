@@ -16,7 +16,7 @@ var searchResults = [];
 
 // updates the i-th (index) item in the user's wish list (items)
 // and modifies the wish list UI to reflect the newly updated info
-function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
+/*function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 {
 	var prevPrice = oldPrice;
 
@@ -91,7 +91,7 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 		items[index].oldPrice = items[index].newPrice;
 		items[index].newPrice = formattedPrice;
 	}
-}
+}*/
 
 // fills the internal wishList data structure with items saved in localStorage
 function populateList()
@@ -221,31 +221,60 @@ function deleteWishListItem(event)
 		if (!aNode) break;
 
 		aNode.setAttribute("id", "item-" + (i - 1));
-	}
+	}   
+}
+
+// retrieve the info object for the selected app 
+// (uniquely identified by appName + appPublisher)
+function getAppInfo(results, appName, appPublisher)
+{
+    var res;
     
-    console.log(wishList); // dummy code
+    for (var i = 0; i < results.length; i++)
+    {
+        var currApp = results[i];
+        
+        if (currApp.trackName === appName && currApp.artistName === appPublisher)
+        {
+            console.log('AppStore - name: ' + currApp.trackName);
+            console.log('AppStore - publisher: ' + currApp.artistName);
+            
+            console.log('AppStore - price: ' + currApp.formattedPrice);
+            
+            console.log('WishList - name: ' + appName);
+            console.log('WishList - publisher: ' + appPublisher);
+            
+            res = results[i];
+            break;
+        }
+    }
+    
+    return res;
 }
 
 // given data (data) from the App Store, this function
 // updates the app price and UI container for the 
 // i-th (index) item in the user's wish list (items)
 function updateWithAppStorePrice(items, index, data)
-{
+{   
 	var oldPrice = 0;
 	var newPrice = 0;
-
+    
+    // retrieve the latest info (for this app) from the iOS App Store
+    var newInfo = getAppInfo(data.results, items[index].name, items[index].publisher);
+    
     // if the old price for this app is not 'Free'...
 	if (items[index].oldPrice != "Free")
 	{
-        // extract the numeric value (10.99) from the given 'old price' string ('$10.99')
+        // extract the numeric value (10.99) from the stored 'old price' string ('$10.99')
 		oldPrice = Number(/.(\d+\.\d+)/.exec(items[index].oldPrice)[1]);
 	}
 
     // if the new 'App Store' price for this app is not 'Free'...
-	if (data.results[0].formattedPrice != "Free")
+	if (newInfo.formattedPrice != "Free")
 	{
         // extract the numeric value (10.99) from the given 'new price' string ('$10.99')
-		newPrice = Number(/.(\d+\.\d+)/.exec(data.results[0].formattedPrice)[1]);
+		newPrice = Number(/.(\d+\.\d+)/.exec(newInfo.formattedPrice)[1]);
 	}
 
     // classes for coloring each item based on price increase/drop
@@ -290,7 +319,7 @@ function updateWithAppStorePrice(items, index, data)
 	var updatedTime = Date.now();
 
 	// update the price for this app to the latest 'App Store' price
-	items[index].oldPrice = data.results[0].formattedPrice;
+	items[index].oldPrice = newInfo.formattedPrice;
     
     // set the lastUpdated timestamp to the current time
 	items[index].lastUpdated = updatedTime;
@@ -300,7 +329,7 @@ function updateWithAppStorePrice(items, index, data)
 	var itemInfo = JSON.parse(window.localStorage["item-" + index]);
     
     // update the price (in localStorage) for this app to the 'App Store' price
-	itemInfo.oldPrice = data.results[0].formattedPrice;
+	itemInfo.oldPrice = newInfo.formattedPrice;
     
     // update the lastUpdated timestamp (in localStorage) for this app to the 'App Store' price
 	itemInfo.lastUpdated = updatedTime;
