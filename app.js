@@ -230,9 +230,19 @@ function getAppInfo(results, appName, appPublisher)
 {
     var res;
     
+    console.log(appName);
+    console.log(appPublisher);
+    
+    console.log(results.length);
+    
     for (var i = 0; i < results.length; i++)
     {
         var currApp = results[i];
+        
+        console.log('AppStore - name: ' + currApp.trackName);
+        console.log('AppStore - publisher: ' + currApp.artistName);
+            
+        console.log('AppStore - price: ' + currApp.formattedPrice);
         
         if (currApp.trackName === appName && currApp.artistName === appPublisher)
         {
@@ -404,7 +414,7 @@ function displayList(items)
 		var iTunesUrl = "https://itunes.apple.com/search";
         
         // construct search query object for requesting data from the Search API
-		var queryData = {term : items[i].name, country : "US", limit : "10", entity : "software"};
+		var queryData = {term : items[i].name, country : "US", limit : "25", entity : "software"};
 
         // compute the timestamp for the current time
 		var currTime = Date.now();
