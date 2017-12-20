@@ -14,42 +14,35 @@ var newItems = 0;
 
 var searchResults = [];
 
-// TODO
+// updates the i-th (index) item in the user's wish list (items)
+// and modifies the wish list UI to reflect the newly updated info
 function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 {
-	//console.log("before oldPrice:", items[index].newPrice);
-	//console.log("before newPrice:", data.results[0].formattedPrice);
-
 	var prevPrice = oldPrice;
-
-	//console.log("newPrice:", newPrice); // dummy code
 
 	var formattedPrice = data.results[0].formattedPrice;
 	var nextPrice      = prevPrice;
 
-	//console.log("after oldPrice:", oldPrice); // dummy code
-	//console.log("after newPrice:", newPrice); // dummy code
-
-	// replace the ternary operator with if-else statements
-
+	// if the 'old price' string is set to 'Free'...
 	if (oldPrice === "Free")
 	{
         // 'Free' corresponds to a numeric price of 0 (zero)
 		prevPrice = 0;
 	}
+    // else if the 'old price' string contains a valid non-zero price...
 	else
 	{
         // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
 		prevPrice = Number(/.(\d+\.\d+)/.exec(oldPrice)[1]);
 	}
 
-	// DO NOT use the ternary operator
-
+	// if the 'App Store' price is set to 'Free'...
 	if (formattedPrice == "Free")
 	{
         // 'Free' corresponds to a numeric price of 0 (zero)
 		nextPrice = 0;
 	}
+    // else if the 'App Store' price is a valid, non-zero price...
 	else
 	{
         // extract formatted price (e.g. 10.99) from raw string (e.g. '$10.99')
@@ -64,7 +57,6 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 	if (nextPrice < prevPrice)
 	{
 		// color the list item for this app GREEN
-        
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
 
@@ -75,7 +67,6 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 	else if (nextPrice > prevPrice)
 	{
 		// color the list item for this app RED
-
 		if (targetNode.classList.contains(greenItemColor))
 			targetNode.classList.remove(greenItemColor);
 
@@ -86,7 +77,6 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 	else
 	{
 		// set color to NEUTRAL for this list-item
-		
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
 
@@ -101,17 +91,9 @@ function updateItemStatus(items, index, targetNode, newPrice, oldPrice, data)
 		items[index].oldPrice = items[index].newPrice;
 		items[index].newPrice = formattedPrice;
 	}
-
-	//console.log("nextPrice:", nextPrice); // dummy code
-	//console.log("prevPrice:", prevPrice); // dummy code
-
-	//waitingForResponse = false;
-
-	//console.log("new oldPrice:", items[index].oldPrice);
-	//console.log("new newPrice:", items[index].newPrice);
 }
 
-// TODO
+// fills the internal wishList data structure with items saved in localStorage
 function populateList()
 {
 	var storage = window.localStorage;
@@ -122,87 +104,86 @@ function populateList()
 	}
 }
 
-// TODO
+// displays the count for newly added wish list items inside a 
+// badge UI element that exists on the 'List' tab menu item
 function displayNewItemsBadge()
 {
 	var newItemsBadge = document.getElementById("new-item-badge");
 
 	if (newItems > 0)
 	{
-		// display the count of new items
-
+		// new items have been added ==> display the count of new items
 		newItemsBadge.innerText = String(newItems);
 	}
 	else
 	{
-		// no new items have been added
-
+		// no new items have been added ==> remove 'new items' badge
 		newItemsBadge.innerText = "";
 	}
 }
 
-// CONTINUE CODE REVIEW HERE //
+// updates the internal wish list and localStorage data structures
+// by adding the selected app to the user's wish list
+//
+// NOTE: this function also handles removal of the 'add item' button
 function addWishListItem(event)
 {
+    // if localStorage exists ==> add selected app to localStorage
 	if (hasLocalStorage())
 	{
 		var storage = window.localStorage;
 
 		storage["item-" + wishList.length] = JSON.stringify(event.data);
 	}
-
-	//console.log(event.data); // dummy code
-
+    
+    // append the selected app to the user's wish list
 	wishList.push(event.data);
-
-	// display updated count of new items
-
+    
+    // increment the count of new items added to the wish list
 	newItems++;
-
+    
+    // display the count of newly added wish list items
 	displayNewItemsBadge();
 
-	// remove the add button from this item, since it's already on the wish list
+	// remove the 'add item' button from the selected 
+    // app after it has been added to the wish list
 	if (!event.target.classList.contains("symbol-hide"))
 	{
-		console.log("added the class!"); // dummy code
 		event.target.classList.add("symbol-hide");
 	}
-
-	event.preventDefault(); // dummy code
-
-	//console.log(window.localStorage); // dummy code
-}
-
-// TODO
-function deleteWishListItem(event)
-{
-	// prevent handling of anchor tag click-through
+    
+    // ???
 	event.preventDefault();
 
-	// determine which list item needs to be removed
+}
+
+// removes the selected app from the wish list UI and
+// updates localStorage to reflect the newly deleted item
+function deleteWishListItem(event)
+{
+	// disable default behavior for 'a' elements
+	event.preventDefault();
+
+	// determine the index of the list item to be removed
 	var index = Number(/remove-btn-(\d+)/.exec(event.currentTarget.getAttribute("class"))[1]);
 
-	//console.log(index); // dummy code
-
-	//console.log(event.currentTarget.getAttribute("id")) // dummy code
-	console.log(wishList.splice(index, 1)); // dummy code
-
-	//console.log(document.querySelector("#list-results #item-" + index)); // dummy code
-
-	// remove this item from the wishlist (without affecting the others)
+	// delete the UI element (for this item) from the wishlist (without affecting the others)
 	$("#list-results #item-" + index).detach();
+    
+    // delete the selected app from the internal wishList structure
+    wishList = wishList.slice(0, index).concat(wishList.slice(index + 1));
 
+    // if the user has access to localStorage...
 	if (hasLocalStorage())
 	{
 		var storage = window.localStorage;
 
+        // delete the selected wish list item from localStorage
 		storage.removeItem("item-" + index);
 
-		// re-adjust indices for each item in localStorage
-
+		// left-shift (by one) all wish list items that follow the deleted element (in localStorage)
 		if (wishList.length > 0)
 		{
-
 			for (var i = index + 1; ; i++)
 			{
 				var storageItem = storage["item-" + i];
@@ -212,22 +193,11 @@ function deleteWishListItem(event)
 				storage.removeItem("item-" + i);
 				storage["item-" + (i - 1)] = storageItem;
 			}
-
-			/*for (var i = index + 1; ; i++)
-			{
-				//document.getElementById("item-" + i).setAttribute("id", "item-" + (i - 1));
-				console.log(document.getElementById("item-" + i)) // dummy code
-			}*/
 		}
 
-		//document.getElementById("list-results").innerHTML = "";
-
-		//displayList(wishList, false);
-
-		//console.log(wishList); // dummy code
 	}
 
-	// re-adjust indices for each remove-btn
+	// left-shift (by one) the 'remove item' buttons for each item following the deleted item
 	for (var i = index + 1; ; i++)
 	{
 		try
@@ -236,8 +206,6 @@ function deleteWishListItem(event)
 
 			removeButton.classList.remove("remove-btn-" + i);
 			removeButton.classList.add("remove-btn-" + (i - 1));
-
-			console.log(removeButton); // dummy code
 		}
 		catch (e)
 		{
@@ -245,7 +213,7 @@ function deleteWishListItem(event)
 		}
 	}
 
-	// re-adjust indices for each listed item
+	// left-shift (by one) the container UI elements for each item following the deleted item
 	for (var i = index + 1; ; i++)
 	{
 		var aNode = document.querySelector("#list-results #item-" + i);
@@ -253,153 +221,134 @@ function deleteWishListItem(event)
 		if (!aNode) break;
 
 		aNode.setAttribute("id", "item-" + (i - 1));
-
-		console.log(aNode); // dummy code
 	}
-
-	//event.currentTarget.parentNode.innerHTML = ""; // dummy code
-
-	// remove this list item from the UI
-	//event.currentTarget.outerHTML = ""
-
-	//document.getElementById("item" + index).outerHTML = "";
+    
+    console.log(wishList); // dummy code
 }
 
-// TODO
-function testFunction(items, index, data)
+// given data (data) from the App Store, this function
+// updates the app price and UI container for the 
+// i-th (index) item in the user's wish list (items)
+function updateWithAppStorePrice(items, index, data)
 {
-	console.log("items:", items); // dummy code
-	console.log("index:", index); // dummy code
+	var oldPrice = 0;
+	var newPrice = 0;
 
-	console.log("oldPrice:", items[index].oldPrice);          // dummy code
-	console.log("newPrice:", data.results[0].formattedPrice); // dummy code
-
-	var prevPrice = 0;
-	var nextPrice = 0;
-
+    // if the old price for this app is not 'Free'...
 	if (items[index].oldPrice != "Free")
 	{
-		prevPrice = Number(/.(\d+\.\d+)/.exec(items[index].oldPrice)[1]);
+        // extract the numeric value (10.99) from the given 'old price' string ('$10.99')
+		oldPrice = Number(/.(\d+\.\d+)/.exec(items[index].oldPrice)[1]);
 	}
 
+    // if the new 'App Store' price for this app is not 'Free'...
 	if (data.results[0].formattedPrice != "Free")
 	{
-		nextPrice = Number(/.(\d+\.\d+)/.exec(data.results[0].formattedPrice)[1]);
+        // extract the numeric value (10.99) from the given 'new price' string ('$10.99')
+		newPrice = Number(/.(\d+\.\d+)/.exec(data.results[0].formattedPrice)[1]);
 	}
 
-	var redItemColor   = "list-group-item-danger";
-	var greenItemColor = "list-group-item-success";
+    // classes for coloring each item based on price increase/drop
+	var redItemColor   = "list-group-item-danger";  // price increase
+	var greenItemColor = "list-group-item-success"; // price drop
 
+    // get a reference to the i-th UI element in the wish list
 	var targetNode = document.querySelector("#list-results #item-" + index);
-
-	//console.log("targetNode:", targetNode); // dummy code
-
-	// DEBUG ONLY //
-	
-	/*
-	if (nextPrice == 0)
-	{
-		nextPrice += 1.99;
-	}
-	else
-	{
-		nextPrice -= 0.99;
-	}
-	*/
-
-	//console.log("prevPrice:", prevPrice); // dummy code
-	//console.log("nextPrice:", nextPrice); // dummy code
-
-	if (nextPrice < prevPrice)
+    
+    // if the price has dropped...
+	if (newPrice < oldPrice)
 	{
 		// make the background GREEN
-		
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
 
 		if (!targetNode.classList.contains(greenItemColor))
 			targetNode.classList.add(greenItemColor);
 	}
-	else if (nextPrice > prevPrice)
+    // if the price has increased...
+	else if (newPrice > oldPrice)
 	{
 		// make the background RED
-
 		if (targetNode.classList.contains(greenItemColor))
 			targetNode.classList.remove(greenItemColor);
 
 		if (!targetNode.classList.contains(redItemColor))
 			targetNode.classList.add(redItemColor);
 	}
+    // if the price is unchanged...
 	else
 	{
 		// make the background NEUTRAL
-
 		if (targetNode.classList.contains(greenItemColor))
 			targetNode.classList.remove(greenItemColor);
 
 		if (targetNode.classList.contains(redItemColor))
 			targetNode.classList.remove(redItemColor);
 	}
-
-	// update the price of the app to the latest up-to-date value
-	
-	console.log("nextPrice:", nextPrice);
-
+    
+    // compute the timestamp for the current time
 	var updatedTime = Date.now();
 
-	// update the current wish list
+	// update the price for this app to the latest 'App Store' price
 	items[index].oldPrice = data.results[0].formattedPrice;
+    
+    // set the lastUpdated timestamp to the current time
 	items[index].lastUpdated = updatedTime;
 
-	// update localStorage to reflect this change
+	// retrieve the info for this app from localStorage
+    // NOTE: we need to first check if the user has localStorage enabled...
 	var itemInfo = JSON.parse(window.localStorage["item-" + index]);
-
-	itemInfo.oldPrice    = data.results[0].formattedPrice;
+    
+    // update the price (in localStorage) for this app to the 'App Store' price
+	itemInfo.oldPrice = data.results[0].formattedPrice;
+    
+    // update the lastUpdated timestamp (in localStorage) for this app to the 'App Store' price
 	itemInfo.lastUpdated = updatedTime;
-
+    
+    // persist the newly updated info for this app to localStorage
 	window.localStorage["item-" + index] = JSON.stringify(itemInfo);
 
-	console.log(items[index].oldPrice); // dummy code
-
-	// update the price badge with the new price value
+	// update the 'app price' badge with the new price value
 	$("#list-results #item-" + index + " .badge").text(items[index].oldPrice);
 
-	// allow user to remove app only AFTER we have computed the price change
-
+	// create a UI element for the 'delete item button'
 	var removeDiv = document.createElement("div");
-
+    
 	removeDiv.classList.add("remove-btn-" + index);
 	removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
-
+    
+    // attach the 'remove item' button to the UI container for this app
 	$("#list-results #item-" + index).prepend(removeDiv);
-
+    
+    // trigger the 'delete' functionality when the user clicks the 'remove item' button
 	removeDiv.addEventListener("click", deleteWishListItem);
 
-	console.log("targetNode:", targetNode); // dummy code
-
-	console.log("");
 }
 
-// TODO
+// display the user's wish list within the main UI and retrieve the updated prices for each app
 function displayList(items)
 {
 	var wishList = items;
-	var j = 0;
 
+    // ???
 	var oldPrice     = 0;
 	var updatedPrice = 0;
 
+    // create a container UI element for each
+    // app in the user's wish list and update
+    // the price for each app, as needed
 	for (var i = 0; i < items.length; i++)
 	{
-		j = i;
-
+        
+        // create a UI element to contain the 'app icon'
 		var imgNode = document.createElement("img");
 
 		imgNode.setAttribute("src", items[i].icon);
 		imgNode.setAttribute("class", "app-icon");
 
-		//console.log(items[i].icon); // dummy code
-
+        // create a UI element to contain the 'app name'
+        // when clicked, this element redirects to the 
+        // appropriate iOS App Store page for this app
 		var aNode = document.createElement("a");
 		
 		aNode.setAttribute("href", "#");
@@ -409,116 +358,114 @@ function displayList(items)
 		aNode.setAttribute("href", items[i].infoUrl);
 		aNode.setAttribute("target", "_blank");
 
-		//aNode.setAttribute("role", "button"); // dummy code
-
+        // add publisher info to the 'app name' UI element
 		aNode.innerText = items[i].name + " - " + items[i].publisher;
 
-
+        // create a UI element to contain the 'app price'
 		var badgeNode = document.createElement("span");
 
 		badgeNode.setAttribute("class", "badge");
-
-		//console.log(items[i].newPrice); // dummy code
-
-		newPrice = items[i].newPrice; // dummy code
-
-		badgeNode.innerText = items[i].oldPrice; // uncomment this when ready...
-
+        
+		badgeNode.innerText = items[i].oldPrice;
+        
+        // attach the 'app price' alongside the 'app name'
 		aNode.appendChild(badgeNode);
 
-		//aNode.addEventListener("click", deleteWishListItem);
-
-		/*
-		var removeDiv = document.createElement("div");
-
-		//aNode.setAttribute("id", "item-" + i);
-		removeDiv.classList.add("remove-btn-" + i);
-		removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
-		*/
-
+        // base URL for the iTunes Search API
 		var iTunesUrl = "https://itunes.apple.com/search";
+        
+        // construct search query object for requesting data from the Search API
 		var queryData = {term : items[i].name, country : "US", limit : "10", entity : "software"};
 
-		//console.log(wishList[j].name, wishList[j].newPrice); // dummy code
-
-		//while (waitingForResponse);
-
-		// retrieve search results from iTunes server
-		/*$.getJSON(iTunesUrl, queryData, updateItemStatus.bind(null, items, i, aNode, newPrice));*/
-
+        // compute the timestamp for the current time
 		var currTime = Date.now();
 
-		var updateItems = items[i].lastUpdated == undefined || (currTime - items[i].lastUpdated) / (60*60*1000) > 1;
-
-		// if the price for this app was retrieved more than an hour ago...
-		if (updateItems)
+		// if the price for this app was last updated more than an hour ago...
+		if (items[i].lastUpdated == undefined || (currTime - items[i].lastUpdated) / (60*60*1000) > 1)
 		{
-			//waitingForResponse = true;
-
-			//console.log(wishList[i]); // dummy code
-
+            // retrieve the updated price (for this app) from the App Store
 			$.ajax({
 			url : iTunesUrl,
 			dataType : "jsonp",
 			data : queryData,
-			success : testFunction.bind(null, items, i)
+			success : updateWithAppStorePrice.bind(null, items, i)
 			});
 		}
-
+        
+        // attach the 'app name' element to the main list UI
 		$("#list-results").append(aNode);
 		
+        // inser the 'app icon' inside the container UI element
 		$("#list-results #item-" + i).prepend(imgNode);
+        
+        var updateItems = (items[i].lastUpdated == undefined || (currTime - items[i].lastUpdated) / (60*60*1000) > 1);
 
-		// if we didn't fetch any results from server, then keep the remove button as is
-
+		// if the price for this app is already up-to-date...
 		if (!updateItems)
 		{
+            // add the 'remove item' button
 			var removeDiv = document.createElement("div");
 
 			removeDiv.classList.add("remove-btn-" + i);
 			removeDiv.innerHTML = "<i style='font-size: 30px; margin-right: 15px;' class='fa fa-minus-circle' aria-hidden='false'></i>";
 
 			$("#list-results #item-" + i).prepend(removeDiv);
-
+            
+            // trigger the 'delete' logic when the user clicks on the 'remove item' button
 			removeDiv.addEventListener("click", deleteWishListItem);
 		}
-
-		//removeDiv.addEventListener("click", deleteWishListItem);
+        
 	}
 }
 
-// TODO
+// display the user's wish list within the main UI
 function showWishList()
 {
-
+    // clear the main list display GUI
 	document.getElementById("list-results").innerHTML = "";
-
+    
+    // slide the 'search results' view upwards to hide it
 	$("#search-view").slideUp();
+    
+    // slide the 'wish list' view downwards to show it
 	$("#list-view").slideDown();
-
+    
+    // un-highlight the 'Search' tab menu item
 	$("#search-menu-button").removeClass("active");
+    
+    // highlight the 'List' tab menu item as 'active'
 	$("#list-menu-button").addClass("active");
 
+    // display the user's wish list on-screen
 	displayList(wishList, true);
 
-	// reset the count of new items
+	// reset the count of newly added items (& remove 'new items' badge)
 	newItems = 0;
 	displayNewItemsBadge();
 }
 
-// TODO
+// display the App Store search results within the main UI
 function showSearchList()
 {
+    // clear the main list display UI
 	document.getElementById("list-results").innerHTML = "";
-
+    
+    // slide the 'wish list' view upwards to hide it
 	$("#list-view").slideUp();
+    
+    // slide the 'search results' view downwards to show it
 	$("#search-view").slideDown();
-
+    
+    // clear the previous search results from the UI
 	document.getElementById("search-results").innerHTML = "";
-
+    
+    // display the results of searching for the query string in the 'Search...' text box
 	displayResults(searchResults);
-
+    
+    // un-highlight the 'List' tab menu item to mark it as 'inactive'
 	$("#list-menu-button").removeClass("active");
+    
+    // highlight the 'Search' tab menu item to mark it as 'active'
 	$("#search-menu-button").addClass("active");
 }
 
@@ -649,7 +596,7 @@ function displayResults(results)
 	}
 }
 
-// TODO
+// checks if the browser environment supports data persistence (via localStorage)
 function hasLocalStorage()
 {
 	try
@@ -670,7 +617,7 @@ function hasLocalStorage()
 	}
 }
 
-// TODO
+// main logic that runs when the user first opens the web app
 $( document ).ready(function() {
     
     // trigger the searchAppStore function when the user clicks the 'Search' button
@@ -688,7 +635,6 @@ $( document ).ready(function() {
 	// pre-populate the wish list with any items we saved during the previous session
 	if (hasLocalStorage())
 	{
-		//console.log(window.localStorage);
 		populateList();
 	}
     
